@@ -19,6 +19,8 @@ import net.minecraft.util.Unit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public class Photography implements ModInitializer {
 	public static final String MOD_ID = "Photography";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
@@ -52,6 +54,7 @@ public class Photography implements ModInitializer {
 		photographyCamera.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
 			currentNbt.putBoolean("isPhotographyCamera",true);
 		}));
+		photographyCamera.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent()
 		photographyCamera.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(56774));
 		photographyCamera.set(DataComponentTypes.ITEM_NAME, Text.literal("Camera"));
 		entries.addAfter(Items.MAP, photographyCamera);

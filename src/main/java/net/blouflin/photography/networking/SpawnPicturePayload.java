@@ -1,5 +1,6 @@
 package net.blouflin.photography.networking;
 
+import it.unimi.dsi.fastutil.floats.FloatList;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.component.type.MapIdComponent;
@@ -44,6 +45,7 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
                 currentNbt.putBoolean("isPhotographyFilledMap",true);
             }));
             stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(56776));
+            stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(list, list1, list2, list3));
             stack.set(DataComponentTypes.ITEM_NAME, Text.literal("Photography"));
             stack.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
 

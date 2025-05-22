@@ -72,14 +72,17 @@ public class PhotographyClient implements ClientModInitializer {
         UseItemCallback.EVENT.register((player, world, hand) -> {
             if (((PlayerIsUsingCamera) player).isUsingPhotographyCamera()) {
                 player.getStackInHand(Hand.valueOf(PhotographyHud.handUsingPhotographyCamera)).use(world, player, Hand.valueOf(PhotographyHud.handUsingPhotographyCamera));
-                return TypedActionResult.fail(ItemStack.EMPTY);
+                //return TypedActionResult.fail(ItemStack.EMPTY);
+                return ActionResult.FAIL;
             } else if (player.getStackInHand(Hand.MAIN_HAND).getItem() == photographyCameraStack.getItem()) {
                 if (Objects.equals(player.getStackInHand(Hand.MAIN_HAND).getComponents().get(DataComponentTypes.CUSTOM_DATA), photographyCameraStack.getComponents().get(DataComponentTypes.CUSTOM_DATA))) {
                     player.getStackInHand(Hand.MAIN_HAND).use(world, player, Hand.MAIN_HAND);
-                    return TypedActionResult.fail(ItemStack.EMPTY);
+                    return ActionResult.FAIL;
+                            //TypedActionResult.fail(ItemStack.EMPTY);
                 }
             }
-            return TypedActionResult.pass(ItemStack.EMPTY);
+            return ActionResult.PASS;
+            //TypedActionResult.pass(ItemStack.EMPTY);
         });
     }
 

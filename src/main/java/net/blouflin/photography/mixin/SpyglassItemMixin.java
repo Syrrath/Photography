@@ -13,7 +13,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
+//import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,9 +26,11 @@ import java.util.Objects;
 public abstract class SpyglassItemMixin {
 
     @Inject(method = "use", at = @At("HEAD"), cancellable = true)
-    private void injected(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
+    private void injected(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
+                          //CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
 
-        cir.setReturnValue(new TypedActionResult<>(ActionResult.PASS, user.getStackInHand(hand)));
+        //cir.setReturnValue(new TypedActionResult<>(ActionResult.PASS, user.getStackInHand(hand)));
+        cir.setReturnValue(new ActionResult.Pass());
 
         if (world.isClient) {
 

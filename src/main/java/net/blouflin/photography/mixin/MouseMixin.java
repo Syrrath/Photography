@@ -12,13 +12,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Mouse.class)
 public class MouseMixin {
 
-    @Inject(at = @At("RETURN"), method = "onMouseScroll(JDD)V")
+    @Inject(at = @At("RETURN"), method = "onMouseScroll(JDD)V", cancellable = true)
     private void onMouseScroll(long window, double horizontal, double vertical, CallbackInfo ci) {
 
         MinecraftClient client = MinecraftClient.getInstance();
         vertical = -vertical;
 
         if(PhotographyHud.isUsingPhotographyCamera) {
+            ci.cancel();
             if (vertical > 0) {
                 PhotographyHud.zoomAmount *= 1.1;
             } else if (vertical < 0) {

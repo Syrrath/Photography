@@ -1,0 +1,31 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "cases": [
+      {
+        "when": "isPhotographyCamera:1b",
+        "model":{
+          "type": "minecraft:condition",
+          "property": "minecraft:custom_model_data",
+          "on_true": {
+            "type": "minecraft:model",
+            "model": "photography:item/camera"
+          },
+          "on_false": {
+            "type": "minecraft:model",
+            "model": "minecraft:item/spyglass"
+          }
+        }
+      }
+    ],
+    "model": "photography:item/camera",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/spyglass"
+    }
+  },
+  "properties": {
+    "hand_animation_on_swap": true
+  }
+}

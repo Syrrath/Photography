@@ -3,15 +3,16 @@ package net.blouflin.photography.mixin;
 import net.minecraft.block.Block;
 import net.minecraft.block.StainedGlassPaneBlock;
 import net.minecraft.block.TranslucentBlock;
+import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.item.BuiltinModelItemRenderer;
-import net.minecraft.client.render.item.ItemModels;
+//import net.minecraft.client.render.item.BuiltinModelItemRenderer;
+//import net.minecraft.client.render.item.ItemModels;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
+//import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
@@ -36,7 +37,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ItemRenderer.class)
 public abstract class ItemRendererMixin {
 
-    @Shadow @Final private ItemModels models;
+    /*@Shadow @Final private ItemModels models;
 
     @Shadow @Final private BuiltinModelItemRenderer builtinModelItemRenderer;
 
@@ -47,6 +48,8 @@ public abstract class ItemRendererMixin {
     @Shadow @Final private static ModelIdentifier SPYGLASS;
 
     @Shadow public abstract BakedModel getModel(ItemStack stack, @Nullable World world, @Nullable LivingEntity entity, int seed);
+
+    @Shadow @Final private ItemModelManager itemModelManager;
 
     @Inject(at = @At("HEAD"), cancellable = true, method = "renderItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformationMode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IILnet/minecraft/client/render/model/BakedModel;)V")
     private void injected(ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, BakedModel model, CallbackInfo ci) {
@@ -65,6 +68,7 @@ public abstract class ItemRendererMixin {
         }
         if (stack.isOf(Items.SPYGLASS) && stack.getComponents().contains(DataComponentTypes.CUSTOM_DATA)) {
             if (stack.getComponents().get(DataComponentTypes.CUSTOM_DATA).toString().contains("isPhotographyCamera:1b")) {
+
                 model = this.models.getModelManager().getModel(Identifier.of("photography","item/camera"));
             }
         }
@@ -99,5 +103,5 @@ public abstract class ItemRendererMixin {
     @Unique
     private static boolean usesDynamicDisplay(ItemStack stack) {
         return stack.isIn(ItemTags.COMPASSES) || stack.isOf(Items.CLOCK);
-    }
+    }*/
 }
