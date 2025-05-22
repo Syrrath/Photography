@@ -50,7 +50,8 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
                 PhotographyHud.isTakingPhoto = false;
 
                 try {
-                    byte[] imageBytes = nativeImage.getBytes();
+                    //byte[] imageBytes = nativeImage.getBytes();
+                    byte[] imageBytes = nativeImage.getFormat().toString().getBytes();
                     BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageBytes));
                     bufferedImage = CreatePicturePayload.crop(bufferedImage, bufferedImage.getHeight(), bufferedImage.getHeight());
 

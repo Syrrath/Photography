@@ -54,8 +54,8 @@ public class Photography implements ModInitializer {
 		photographyCamera.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
 			currentNbt.putBoolean("isPhotographyCamera",true);
 		}));
-		photographyCamera.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent()
-		photographyCamera.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(56774));
+		//photographyCamera.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent()
+		//photographyCamera.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(56774));
 		photographyCamera.set(DataComponentTypes.ITEM_NAME, Text.literal("Camera"));
 		entries.addAfter(Items.MAP, photographyCamera);
 
@@ -63,7 +63,7 @@ public class Photography implements ModInitializer {
 		photographicPaper.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
 			currentNbt.putBoolean("isPhotographyEmptyMap",true);
 		}));
-		photographicPaper.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(56775));
+		//photographicPaper.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(56775));
 		photographicPaper.set(DataComponentTypes.ITEM_NAME, Text.literal("Photographic Paper"));
 		photographicPaper.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
 		entries.addBefore(Items.WRITABLE_BOOK, photographicPaper);

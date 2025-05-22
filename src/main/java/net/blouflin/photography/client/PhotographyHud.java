@@ -118,10 +118,10 @@ public class PhotographyHud {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-        context.drawTexture(RenderLayer::getGuiTextured, CAMERA_SCOPE_TO_RENDER, k, l, -90, 0.0f, 0.0f, i, j, i, j);
+        context.drawTexture(RenderLayer::getGuiTextured, CAMERA_SCOPE_FLASH, k, l, 0.0f, 0.0f, i, j, i, j);
 
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, spyglassFlashOpacity);
-        context.drawTexture(RenderLayer::getGuiTextured, CAMERA_SCOPE_FLASH, k, l, -90, 0.0f, 0.0f, i, j, i, j);
+        context.drawTexture(RenderLayer::getGuiTextured, CAMERA_SCOPE_TO_RENDER, k, l, 0.0f, 0.0f, i, j, i, j);
 
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
