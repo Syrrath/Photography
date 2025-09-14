@@ -34,12 +34,14 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
 
         MapIdComponent mapId = new MapIdComponent(id);
         RegistryWrapper.WrapperLookup registryLookup = player.getRegistryManager();
+        //MapState mapState = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, MapState.of(scale, true, world.getRegistryKey()));
         MapState mapState = MapState.fromNbt(nbtCompound, registryLookup);
 
         player.server.execute(() -> {
 
             ItemStack stack = new ItemStack(Items.FILLED_MAP);
-            player.getEntityWorld().putMapState(mapId, mapState);
+            player.getWorld().putMapState(mapId, mapState);
+            //player.getEntityWorld().putMapState(mapId, mapState);
             stack.set(DataComponentTypes.MAP_ID, mapId);
             stack.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
                 currentNbt.putBoolean("isPhotographyFilledMap",true);
@@ -71,8 +73,8 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
                 if (player.getInventory().insertStack(stack)) {
                     player.getInventory().insertStack(stack);
                 } else {
-                    ItemEntity itemEntity = new ItemEntity(player.getServerWorld(), player.getPos().x, player.getPos().y, player.getPos().z, stack);
-                    player.getServerWorld().spawnEntity(itemEntity);
+                    ItemEntity itemEntity = new ItemEntity(player.getWorld(), player.getPos().x, player.getPos().y, player.getPos().z, stack);
+                    player.getWorld().spawnEntity(itemEntity);
                 }
             }
         });
@@ -84,8 +86,8 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
         if (player.getInventory().insertStack(stack)) {
             player.getInventory().insertStack(stack);
         } else {
-            ItemEntity itemEntity = new ItemEntity(player.getServerWorld(), player.getPos().x, player.getPos().y, player.getPos().z, stack);
-            player.getServerWorld().spawnEntity(itemEntity);
+            ItemEntity itemEntity = new ItemEntity(player.getWorld(), player.getPos().x, player.getPos().y, player.getPos().z, stack);
+            player.getWorld().spawnEntity(itemEntity);
         }
     }
 }
