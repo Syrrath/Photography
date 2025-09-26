@@ -29,7 +29,7 @@ public class Photography implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		//LOGGER.info("Photography mod (by BlouFlin) loaded !");
+		LOGGER.info("Photography mod (by BlouFlin) loaded !");
 
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(this::addItemsToCreativeTab);
 

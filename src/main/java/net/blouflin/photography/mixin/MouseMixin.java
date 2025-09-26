@@ -1,8 +1,10 @@
 package net.blouflin.photography.mixin;
 
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import net.blouflin.photography.client.PhotographyHud;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -11,6 +13,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Mouse.class)
 public class MouseMixin {
+
+    //Uku3lig's nowheel under MIT license: https://github.com/uku3lig/nowheel/blob/1.21.2/src/main/java/net/uku3lig/nowheel/mixin/MouseMixin.java
+    @WrapWithCondition(method = "onMouseScroll", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;setSelectedSlot(I)V"))
+    public boolean onHotbarScroll(PlayerInventory instance, int slot) {
+        return !PhotographyHud.isUsingPhotographyCamera;
+    }
 
     @Inject(at = @At("RETURN"), method = "onMouseScroll(JDD)V", cancellable = true)
     private void onMouseScroll(long window, double horizontal, double vertical, CallbackInfo ci) {

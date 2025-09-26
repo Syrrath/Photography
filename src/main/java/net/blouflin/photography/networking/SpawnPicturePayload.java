@@ -32,9 +32,11 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
 
     public static void receive(ServerPlayerEntity player, Integer id, NbtCompound nbtCompound) {
 
+        //TODO Debug
+        System.out.println("running SpawnPicturePayload.receive");
+
         MapIdComponent mapId = new MapIdComponent(id);
         RegistryWrapper.WrapperLookup registryLookup = player.getRegistryManager();
-        //MapState mapState = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, MapState.of(scale, true, world.getRegistryKey()));
         MapState mapState = MapState.fromNbt(nbtCompound, registryLookup);
 
         player.server.execute(() -> {
@@ -50,6 +52,10 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
             //stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(list, list1, list2, list3));
             stack.set(DataComponentTypes.ITEM_NAME, Text.literal("Photography"));
             stack.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
+
+            //TODO Debug
+            System.out.println(stack);
+            player.getInventory().insertStack(stack);
 
             if(!player.isCreative()) {
                 ItemStack itemStack = new ItemStack(Items.FILLED_MAP);
