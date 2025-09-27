@@ -20,6 +20,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Unit;
 
+import java.util.Collections;
 import java.util.Objects;
 
 
@@ -52,6 +53,7 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
             }));
             //stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(56776));
             //stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(list, list1, list2, list3));
+            stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(Collections.singletonList(1F), Collections.singletonList(true), Collections.singletonList("56776"), Collections.singletonList(16383998)));
             stack.set(DataComponentTypes.ITEM_NAME, Text.literal("Photography"));
             stack.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
 
@@ -65,6 +67,7 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
                     currentNbt.putBoolean("isPhotographyEmptyMap",true);
                 }));
                 //itemStack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(56775));
+                itemStack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(Collections.singletonList(1F), Collections.singletonList(true), Collections.singletonList("56775"), Collections.singletonList(16383998)));
                 itemStack.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
                 itemStack.set(DataComponentTypes.ITEM_NAME, Text.literal("Photographic Paper"));
 
