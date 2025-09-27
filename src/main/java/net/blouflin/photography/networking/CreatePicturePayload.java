@@ -53,14 +53,20 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
 
                 try {
                     //byte[] imageBytes = nativeImage.getBytes();
+                    ScreenshotRecorder.saveScreenshot(client.runDirectory, client.getFramebuffer(), (text) -> {});
+                    System.out.println("nativeImage: "+nativeImage);
                     byte[] imageBytes = nativeImage.getFormat().toString().getBytes();
+                    System.out.println("imageBytes: "+imageBytes);
                     BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageBytes));
+                    System.out.println("bufferedImage: "+bufferedImage);
                     bufferedImage = CreatePicturePayload.crop(bufferedImage, bufferedImage.getHeight(), bufferedImage.getHeight());
 
                     MapState mapState1  = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, id, mapState);
+                    System.out.println("mapstate1: "+mapState1);
 
                     SpawnPicturePayload payload = new SpawnPicturePayload(id, nbtCompound);
                     ClientPlayNetworking.send(payload);
+                    System.out.println("payload: "+payload);
 
                 } catch (IOException e) {
                     e.printStackTrace();
