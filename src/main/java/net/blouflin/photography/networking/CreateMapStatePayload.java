@@ -1,5 +1,6 @@
 package net.blouflin.photography.networking;
 
+import net.blouflin.photography.Photography;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.map.MapState;
 import net.minecraft.nbt.NbtCompound;
@@ -22,6 +23,8 @@ public record CreateMapStatePayload() implements CustomPayload {
 
     public static void receive(ServerPlayerEntity player) {
 
+        System.out.println("running CreateMapStatePayload");
+
         player.server.execute(() -> {
 
             int id = player.getEntityWorld().increaseAndGetMapId().id();
@@ -42,11 +45,13 @@ public record CreateMapStatePayload() implements CustomPayload {
             nbtCompound = state.writeNbt(nbtCompound, registryLookup);
 
             for (ServerPlayerEntity otherPlayer : player.server.getPlayerManager().getPlayerList()) {
+                Photography.LOGGER.info("for ServerPlayerEntity : getPlayerManager");
                 PlayCameraShutterSoundPayload payload = new PlayCameraShutterSoundPayload(GlobalPos.create(player.getEntityWorld().getRegistryKey(),player.getBlockPos()));
                 ServerPlayNetworking.send(otherPlayer,payload);
             }
 
             CreatePicturePayload payload = new CreatePicturePayload(id, nbtCompound);
+            System.out.println(payload);
             ServerPlayNetworking.send(player, payload);
         });
     }

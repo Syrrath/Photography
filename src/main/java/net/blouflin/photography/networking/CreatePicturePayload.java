@@ -31,6 +31,8 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
 
     public static void receive(MinecraftClient client, Integer id, NbtCompound nbtCompound) {
 
+        System.out.println("running CreatePicturePayload");
+
         CompletableFuture<Void> future = new CompletableFuture<>();
 
         client.execute(() -> {

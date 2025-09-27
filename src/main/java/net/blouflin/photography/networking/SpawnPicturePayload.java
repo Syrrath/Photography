@@ -1,6 +1,7 @@
 package net.blouflin.photography.networking;
 
 import it.unimi.dsi.fastutil.floats.FloatList;
+import net.blouflin.photography.Photography;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.component.type.MapIdComponent;
@@ -21,6 +22,7 @@ import net.minecraft.util.Unit;
 
 import java.util.Objects;
 
+
 public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implements CustomPayload {
     public static final CustomPayload.Id<SpawnPicturePayload> ID = CustomPayload.id("photography_spawn_picture");
     public static final PacketCodec<PacketByteBuf, SpawnPicturePayload> CODEC = PacketCodec.of((value, buf) -> buf.writeInt(value.id).writeNbt(value.nbtCompound), buf -> new SpawnPicturePayload(buf.readInt(),buf.readNbt()));
@@ -33,7 +35,7 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
     public static void receive(ServerPlayerEntity player, Integer id, NbtCompound nbtCompound) {
 
         //TODO Debug
-        System.out.println("running SpawnPicturePayload.receive");
+        Photography.LOGGER.info("running SpawnPicturePayload.receive");
 
         MapIdComponent mapId = new MapIdComponent(id);
         RegistryWrapper.WrapperLookup registryLookup = player.getRegistryManager();
