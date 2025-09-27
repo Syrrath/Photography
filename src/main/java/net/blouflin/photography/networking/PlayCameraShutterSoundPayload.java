@@ -19,7 +19,7 @@ public record PlayCameraShutterSoundPayload(GlobalPos globalPos) implements Cust
 
     public static void receive(MinecraftClient client, GlobalPos globalPos) {
         client.execute(() -> {
-            client.world.playSound(globalPos.pos().getX(),globalPos.pos().getY(),globalPos.pos().getZ(),Photography.CAMERA_SHUTTER,SoundCategory.PLAYERS,0.7f,1.0f,true);
+            client.world.playSoundClient(globalPos.pos().getX(),globalPos.pos().getY(),globalPos.pos().getZ(),Photography.CAMERA_SHUTTER,SoundCategory.PLAYERS,0.7f,1.0f,true);
         });
     }
 }

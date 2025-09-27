@@ -18,7 +18,7 @@ public record SetUsingPhotographyCameraPayload(Boolean isUsingPhotographyCamera,
     }
 
     public static void receive(ServerPlayerEntity player, Boolean isUsingPhotographyCamera, String handUsingPhotographyCamera) {
-        player.server.execute(() -> {
+        player.getServer().execute(() -> {
 
             ((PlayerIsUsingCamera) player).setUsingPhotographyCamera(isUsingPhotographyCamera,handUsingPhotographyCamera);
             if (isUsingPhotographyCamera) {
@@ -26,7 +26,7 @@ public record SetUsingPhotographyCameraPayload(Boolean isUsingPhotographyCamera,
             } else {
                 player.playSound(SoundEvents.ITEM_SPYGLASS_STOP_USING, 1.0f, 1.0f);
             }
-            for (ServerPlayerEntity otherPlayer : player.server.getPlayerManager().getPlayerList()) {
+            for (ServerPlayerEntity otherPlayer : player.getServer().getPlayerManager().getPlayerList()) {
                 GetUsingPhotographyCameraPayload payload = new GetUsingPhotographyCameraPayload(player.getUuid(),isUsingPhotographyCamera,handUsingPhotographyCamera);
                 ServerPlayNetworking.send(otherPlayer,payload);
             }

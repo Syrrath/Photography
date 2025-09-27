@@ -26,12 +26,12 @@ public record CreateMapStatePayload() implements CustomPayload {
         // TODO Debug
         System.out.println("running CreateMapStatePayload");
 
-        player.server.execute(() -> {
+        player.getServer().execute(() -> {
 
-            int id = player.getEntityWorld().increaseAndGetMapId().id();
+            int id = player.getWorld().increaseAndGetMapId().id();
             NbtCompound nbt = new NbtCompound();
             RegistryWrapper.WrapperLookup registryLookup = player.getRegistryManager();
-            nbt.putString("dimension", player.getEntityWorld().getRegistryKey().getValue().toString());
+            nbt.putString("dimension", player.getWorld().getRegistryKey().getValue().toString());
             nbt.putInt("xCenter", (int) player.getX());
             nbt.putInt("zCenter", (int) player.getZ());
             nbt.putBoolean("locked", true);
@@ -47,9 +47,11 @@ public record CreateMapStatePayload() implements CustomPayload {
 
             for (ServerPlayerEntity otherPlayer : player.server.getPlayerManager().getPlayerList()) {
                 //TODO Debug
+            for (ServerPlayerEntity otherPlayer : player.getServer().getPlayerManager().getPlayerList()) {
                 Photography.LOGGER.info("for ServerPlayerEntity : getPlayerManager");
 
                 PlayCameraShutterSoundPayload payload = new PlayCameraShutterSoundPayload(GlobalPos.create(player.getEntityWorld().getRegistryKey(),player.getBlockPos()));
+                PlayCameraShutterSoundPayload payload = new PlayCameraShutterSoundPayload(GlobalPos.create(player.getWorld().getRegistryKey(),player.getBlockPos()));
                 ServerPlayNetworking.send(otherPlayer,payload);
             }
 

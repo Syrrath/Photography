@@ -41,7 +41,8 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
         RegistryWrapper.WrapperLookup registryLookup = player.getRegistryManager();
         MapState mapState = MapState.fromNbt(nbtCompound, registryLookup);
 
-        player.server.execute(() -> {
+        //player.server.execute(() -> {
+        player.getServer().execute(() -> {
 
             ItemStack stack = new ItemStack(Items.FILLED_MAP);
             player.getWorld().putMapState(mapId, mapState);

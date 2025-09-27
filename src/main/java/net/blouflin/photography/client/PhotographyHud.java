@@ -1,5 +1,6 @@
 package net.blouflin.photography.client;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.blouflin.photography.networking.SetUsingPhotographyCameraPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -43,7 +44,8 @@ public class PhotographyHud {
 
     public static void renderPhotographyCameraOverlay(DrawContext context) {
 
-        float f = client.getRenderTickCounter().getLastFrameDuration();
+        //float f = client.getRenderTickCounter().getLastFrameDuration();
+        float f = client.getRenderTickCounter().getDynamicDeltaTicks();
         spyglassScale = MathHelper.lerp(0.5f * f, spyglassScale, 1.125f);
 
         if (client.options.getPerspective().isFirstPerson() && client.currentScreen == null) {
@@ -112,21 +114,24 @@ public class PhotographyHud {
         int m = k + i;
         int n = l + j;
 
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-        context.drawTexture(RenderLayer::getGuiTextured, CAMERA_SCOPE_FLASH, k, l, 0.0f, 0.0f, i, j, i, j);
+//        RenderSystem.enableBlend();
+//        RenderSystem.defaultBlendFunc();
+//        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+        context.drawTexture(RenderPipeline.builder().build(), CAMERA_SCOPE_FLASH, k, l, 0.0f, 0.0f, i, j, i, j);
+        context.drawTexture(RenderPipeline.builder().build(), CAMERA_SCOPE_FLASH, k, l, 0.0f, 0.0f, i, j, i, j);
 
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, spyglassFlashOpacity);
-        context.drawTexture(RenderLayer::getGuiTexturedOverlay, CAMERA_SCOPE_TO_RENDER, k, l, 0.0f, 0.0f, i, j, i, j);
+        //RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, spyglassFlashOpacity);
+        //context.drawTexture(RenderLayer::getGuiTexturedOverlay, CAMERA_SCOPE_TO_RENDER, k, l, 0.0f, 0.0f, i, j, i, j);
+        context.drawTexture(RenderPipeline.builder().build(), CAMERA_SCOPE_TO_RENDER, k, l, 0.0f, 0.0f, i, j, i, j);
 
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+        //RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-        RenderSystem.disableBlend();
+        //RenderSystem.disableBlend();
 
-        context.fill(RenderLayer.getGuiOverlay(), 0, n, context.getScaledWindowWidth(), context.getScaledWindowHeight(), -90, Colors.BLACK);
-        context.fill(RenderLayer.getGuiOverlay(), 0, 0, context.getScaledWindowWidth(), l, -90, Colors.BLACK);
-        context.fill(RenderLayer.getGuiOverlay(), 0, l, k, n, -90, Colors.BLACK);
-        context.fill(RenderLayer.getGuiOverlay(), m, l, context.getScaledWindowWidth(), n, -90, Colors.BLACK);
+        //context.fill(RenderLayer.getGuiOverlay(), , Colors.BLACK)
+        context.fill(RenderPipeline.builder().build(), 0, n, context.getScaledWindowWidth(), context.getScaledWindowHeight(), -90);
+        context.fill(RenderPipeline.builder().build(), 0, 0, context.getScaledWindowWidth(), l, -90);
+        context.fill(RenderPipeline.builder().build(), 0, l, k, n, -90);
+        context.fill(RenderPipeline.builder().build(), m, l, context.getScaledWindowWidth(), n, -90);
     }
 }
