@@ -1,7 +1,6 @@
 package net.blouflin.photography.mixin;
 
 import net.blouflin.photography.player.PlayerIsUsingCamera;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.player.PlayerEntity;

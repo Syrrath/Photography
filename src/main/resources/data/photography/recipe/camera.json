@@ -7,12 +7,8 @@
     "CCC"
   ],
   "key": {
-    "C": {
-      "item": "minecraft:copper_ingot"
-    },
-    "S": {
-      "item": "minecraft:spyglass"
-    }
+    "C": "minecraft:copper_ingot",
+    "S": "minecraft:spyglass"
   },
   "result": {
     "id": "minecraft:spyglass",
@@ -22,7 +18,11 @@
       "minecraft:custom_data": {
         "isPhotographyCamera":1
       },
-      "minecraft:custom_model_data": 56774
+      "minecraft:custom_model_data": {
+        "strings": [
+          "56774"
+        ]
+      }
     }
   }
 }

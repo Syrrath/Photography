@@ -4,7 +4,7 @@
     "property": "minecraft:custom_model_data",
     "cases": [
       {
-        "when": "isPhotographyCamera:1b",
+        "when": "56774",
         "model":{
           "type": "minecraft:condition",
           "property": "minecraft:custom_model_data",

@@ -23,6 +23,7 @@ public record CreateMapStatePayload() implements CustomPayload {
 
     public static void receive(ServerPlayerEntity player) {
 
+        // TODO Debug
         System.out.println("running CreateMapStatePayload");
 
         player.server.execute(() -> {
@@ -45,7 +46,9 @@ public record CreateMapStatePayload() implements CustomPayload {
             nbtCompound = state.writeNbt(nbtCompound, registryLookup);
 
             for (ServerPlayerEntity otherPlayer : player.server.getPlayerManager().getPlayerList()) {
+                //TODO Debug
                 Photography.LOGGER.info("for ServerPlayerEntity : getPlayerManager");
+
                 PlayCameraShutterSoundPayload payload = new PlayCameraShutterSoundPayload(GlobalPos.create(player.getEntityWorld().getRegistryKey(),player.getBlockPos()));
                 ServerPlayNetworking.send(otherPlayer,payload);
             }

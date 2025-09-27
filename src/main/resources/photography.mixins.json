@@ -16,7 +16,6 @@
     "KeyboardMixin",
     "MouseMixin",
     "PlayerEntityRendererMixin",
-    "PlayerInventoryMixin",
     "SpyglassItemMixin"
   ]
 }

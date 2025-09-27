@@ -14,9 +14,7 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.registry.RegistryWrapper;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
@@ -31,6 +29,7 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
 
     public static void receive(MinecraftClient client, Integer id, NbtCompound nbtCompound) {
 
+        // TODO Debug
         System.out.println("running CreatePicturePayload");
 
         CompletableFuture<Void> future = new CompletableFuture<>();
@@ -52,98 +51,69 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
                 PhotographyHud.spyglassFlashOpacity = 1.0f;
                 PhotographyHud.isTakingPhoto = false;
 
-                System.out.println("testing1");
-                int[] pixels = nativeImage.copyPixelsArgb();
-                BufferedImage bufferedImage = new BufferedImage(nativeImage.getWidth(), nativeImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
-                bufferedImage.setRGB(0, 0, nativeImage.getWidth(), nativeImage.getHeight(), pixels, 0, nativeImage.getWidth());
+                // TODO Debug
                 System.out.println("testing1");
 
                 try {
+                    int[] pixels = nativeImage.copyPixelsArgb();
+                    BufferedImage bufferedImage = new BufferedImage(nativeImage.getWidth(), nativeImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                    bufferedImage.setRGB(0, 0, nativeImage.getWidth(), nativeImage.getHeight(), pixels, 0, nativeImage.getWidth());
+
+                    // TODO Debug
+                    System.out.println("testing2");
+
                     bufferedImage = CreatePicturePayload.crop(bufferedImage, bufferedImage.getHeight(), bufferedImage.getHeight());
+
+                    // TODO Debug
+                    System.out.println("testing3");
+                    System.out.println("bufferedImage: "+bufferedImage);
+
+                    MapState mapState1  = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, id, mapState);
+
+                    // TODO Debug
+                    System.out.println("mapstate1: "+mapState1);
+
+                    SpawnPicturePayload payload = new SpawnPicturePayload(id, nbtCompound);
+                    ClientPlayNetworking.send(payload);
+
+                    // TODO Debug
+                    System.out.println("Cropping succeeded!");
+                    System.out.println("payload: "+payload);
+
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
-                System.out.println("bufferedImage: "+bufferedImage);
-                MapState mapState1  = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, id, mapState);
-                System.out.println("mapstate1: "+mapState1);
-
-                SpawnPicturePayload payload = new SpawnPicturePayload(id, nbtCompound);
-                ClientPlayNetworking.send(payload);
-                System.out.println("Cropping succeeded!");
-
-//                System.out.println("testing1");
-//                System.out.println("bufferedImage: "+bufferedImage);
-//
-//                MapState mapState1  = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, id, mapState);
-//                System.out.println("mapstate1: "+mapState1);
-//
-//                SpawnPicturePayload payload = new SpawnPicturePayload(id, nbtCompound);
-//                ClientPlayNetworking.send(payload);
-//                System.out.println("payload: "+payload);
-
-//                try {
-//                    //byte[] imageBytes = nativeImage.getBytes();
-//                    //byte[] imageBytes = nativeImage.makePixelArray()
-//                    //BufferedImage bufferedImage = ImageIO.read(imageBytes)
-//
-//                    //System.out.println("nativeImage: "+nativeImage);
-//                    //byte[] imageBytes = nativeImage.getFormat().toString().getBytes();
-//                    //int[] imageBytes = convertImageTo
-//                    //BufferedImage bufferedImage = ImageIO.read(ScreenshotRecorder.SCREENSHOTS_DIRECTORY.getBytes(nativeImage));
-////                    System.out.println("imageBytes: "+imageBytes);
-//                    //BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageBytes));
-//                    //bufferedImage = CreatePicturePayload.crop(bufferedImage, bufferedImage.getHeight(), bufferedImage.getHeight());
-//
-//                    int[] pixels = nativeImage.copyPixelsArgb();
-//                    BufferedImage bufferedImage = new BufferedImage(nativeImage.getWidth(), nativeImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
-//                    bufferedImage.setRGB(0, 0, nativeImage.getWidth(), nativeImage.getHeight(), pixels, 0, nativeImage.getWidth());
-//                    bufferedImage = CreatePicturePayload.crop(bufferedImage, bufferedImage.getHeight(), bufferedImage.getHeight());
-//
-//                    System.out.println("testing1");
-//                    System.out.println("bufferedImage: "+bufferedImage);
-//
-//                    MapState mapState1  = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, id, mapState);
-//                    System.out.println("mapstate1: "+mapState1);
-//
-//                    SpawnPicturePayload payload = new SpawnPicturePayload(id, nbtCompound);
-//                    ClientPlayNetworking.send(payload);
-//                    System.out.println("payload: "+payload);
-//
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
             });
         });
     }
 
     public static BufferedImage crop(BufferedImage bufferedImage, int targetWidth, int targetHeight) throws IOException {
+        // This cropping system doesn't work when the image height is greater than the image width
+
+        // TODO Debug
         System.out.println("bufferedImage width: "+bufferedImage.getWidth() + " bufferedImage height: "+bufferedImage.getHeight());
 
         int height = bufferedImage.getHeight();
         int width = bufferedImage.getWidth();
+        // TODO Debug
         System.out.println("Height: "+height+" Width: "+width);
 
         // Coordinates of the image's middle
         int xc = (width - targetWidth) / 2;
         int yc = (height - targetHeight) / 2;
-//        int xc = width / 2;
-//        int yc = height / 2;
+        // TODO Debug
         System.out.println("xc: "+xc+" yc: "+yc);
 
         // Crop
-//        BufferedImage croppedImage = bufferedImage.getSubimage(
-//                xc,
-//                height,
-//                targetWidth, // width
-//                targetHeight // height
-//        );
         BufferedImage croppedImage = bufferedImage.getSubimage(
                 xc,
                 yc,
                 targetWidth, // width
                 targetHeight // height
         );
+        // TODO Debug
         System.out.println("croppedImage: "+croppedImage);
+
         return croppedImage;
     }
 }
