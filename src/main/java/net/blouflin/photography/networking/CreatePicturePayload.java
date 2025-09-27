@@ -57,18 +57,19 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
                 BufferedImage bufferedImage = new BufferedImage(nativeImage.getWidth(), nativeImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
                 bufferedImage.setRGB(0, 0, nativeImage.getWidth(), nativeImage.getHeight(), pixels, 0, nativeImage.getWidth());
                 System.out.println("testing1");
+
+                try {
+                    bufferedImage = CreatePicturePayload.crop(bufferedImage, bufferedImage.getHeight(), bufferedImage.getHeight());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 System.out.println("bufferedImage: "+bufferedImage);
                 MapState mapState1  = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, id, mapState);
                 System.out.println("mapstate1: "+mapState1);
 
                 SpawnPicturePayload payload = new SpawnPicturePayload(id, nbtCompound);
                 ClientPlayNetworking.send(payload);
-                try {
-                    bufferedImage = CreatePicturePayload.crop(bufferedImage, bufferedImage.getHeight(), bufferedImage.getHeight());
-                } catch (IOException e) {
-                    System.out.println("bufferedImage width: "+bufferedImage.getWidth() + " bufferedImage height: "+bufferedImage.getHeight());
-                    throw new RuntimeException(e);
-                }
+                System.out.println("Cropping succeeded!");
 
 //                System.out.println("testing1");
 //                System.out.println("bufferedImage: "+bufferedImage);
@@ -116,20 +117,33 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
     }
 
     public static BufferedImage crop(BufferedImage bufferedImage, int targetWidth, int targetHeight) throws IOException {
+        System.out.println("bufferedImage width: "+bufferedImage.getWidth() + " bufferedImage height: "+bufferedImage.getHeight());
+
         int height = bufferedImage.getHeight();
         int width = bufferedImage.getWidth();
+        System.out.println("Height: "+height+" Width: "+width);
 
         // Coordinates of the image's middle
         int xc = (width - targetWidth) / 2;
         int yc = (height - targetHeight) / 2;
+//        int xc = width / 2;
+//        int yc = height / 2;
+        System.out.println("xc: "+xc+" yc: "+yc);
 
         // Crop
+//        BufferedImage croppedImage = bufferedImage.getSubimage(
+//                xc,
+//                height,
+//                targetWidth, // width
+//                targetHeight // height
+//        );
         BufferedImage croppedImage = bufferedImage.getSubimage(
                 xc,
                 yc,
                 targetWidth, // width
                 targetHeight // height
         );
+        System.out.println("croppedImage: "+croppedImage);
         return croppedImage;
     }
 }

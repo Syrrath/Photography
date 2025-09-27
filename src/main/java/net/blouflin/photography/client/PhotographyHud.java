@@ -9,6 +9,7 @@ import net.minecraft.client.model.SpriteGetter;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderLayers;
+import net.minecraft.client.render.RenderPhase;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundEvents;
@@ -121,7 +122,7 @@ public class PhotographyHud {
         context.drawTexture(RenderLayer::getGuiTextured, CAMERA_SCOPE_FLASH, k, l, 0.0f, 0.0f, i, j, i, j);
 
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, spyglassFlashOpacity);
-        context.drawTexture(RenderLayer::getGuiTextured, CAMERA_SCOPE_TO_RENDER, k, l, 0.0f, 0.0f, i, j, i, j);
+        context.drawTexture(RenderLayer::getGuiTexturedOverlay, CAMERA_SCOPE_TO_RENDER, k, l, 0.0f, 0.0f, i, j, i, j);
 
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
