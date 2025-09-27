@@ -1,6 +1,5 @@
 package net.blouflin.photography.networking;
 
-import it.unimi.dsi.fastutil.floats.FloatList;
 import net.blouflin.photography.Photography;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.CustomModelDataComponent;
@@ -51,9 +50,7 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
             stack.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
                 currentNbt.putBoolean("isPhotographyFilledMap",true);
             }));
-            //stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(56776));
-            //stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(list, list1, list2, list3));
-            stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(Collections.singletonList(1F), Collections.singletonList(true), Collections.singletonList("56776"), Collections.singletonList(16383998)));
+            stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(Collections.singletonList(1F), Collections.singletonList(stack.getComponents().get(DataComponentTypes.CUSTOM_DATA).toString().contains("isPhotographyFilledMap:1b")), Collections.singletonList("56776"), Collections.singletonList(16383998)));
             stack.set(DataComponentTypes.ITEM_NAME, Text.literal("Photography"));
             stack.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
 
@@ -67,7 +64,7 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
                     currentNbt.putBoolean("isPhotographyEmptyMap",true);
                 }));
                 //itemStack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(56775));
-                itemStack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(Collections.singletonList(1F), Collections.singletonList(true), Collections.singletonList("56775"), Collections.singletonList(16383998)));
+                itemStack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(Collections.singletonList(1F), Collections.singletonList(itemStack.getComponents().get(DataComponentTypes.CUSTOM_DATA).toString().contains("isPhotographyEmptyMap:1b")), Collections.singletonList("56775"), Collections.singletonList(16383998)));
                 itemStack.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
                 itemStack.set(DataComponentTypes.ITEM_NAME, Text.literal("Photographic Paper"));
 
