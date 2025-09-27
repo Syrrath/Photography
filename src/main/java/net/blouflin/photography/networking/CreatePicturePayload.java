@@ -46,31 +46,71 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
 
             future.thenRun(() -> {
                 NativeImage nativeImage = ScreenshotRecorder.takeScreenshot(client.getFramebuffer());
+                ScreenshotRecorder.saveScreenshot(client.runDirectory, client.getFramebuffer(), (text) -> {});
 
                 PhotographyHud.CAMERA_SCOPE_TO_RENDER = PhotographyHud.CAMERA_SCOPE;
                 PhotographyHud.spyglassFlashOpacity = 1.0f;
                 PhotographyHud.isTakingPhoto = false;
 
+                System.out.println("testing1");
+                int[] pixels = nativeImage.copyPixelsArgb();
+                BufferedImage bufferedImage = new BufferedImage(nativeImage.getWidth(), nativeImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                bufferedImage.setRGB(0, 0, nativeImage.getWidth(), nativeImage.getHeight(), pixels, 0, nativeImage.getWidth());
+                System.out.println("testing1");
+                System.out.println("bufferedImage: "+bufferedImage);
+                MapState mapState1  = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, id, mapState);
+                System.out.println("mapstate1: "+mapState1);
+
+                SpawnPicturePayload payload = new SpawnPicturePayload(id, nbtCompound);
+                ClientPlayNetworking.send(payload);
                 try {
-                    //byte[] imageBytes = nativeImage.getBytes();
-                    ScreenshotRecorder.saveScreenshot(client.runDirectory, client.getFramebuffer(), (text) -> {});
-                    System.out.println("nativeImage: "+nativeImage);
-                    byte[] imageBytes = nativeImage.getFormat().toString().getBytes();
-                    System.out.println("imageBytes: "+imageBytes);
-                    BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageBytes));
-                    System.out.println("bufferedImage: "+bufferedImage);
                     bufferedImage = CreatePicturePayload.crop(bufferedImage, bufferedImage.getHeight(), bufferedImage.getHeight());
-
-                    MapState mapState1  = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, id, mapState);
-                    System.out.println("mapstate1: "+mapState1);
-
-                    SpawnPicturePayload payload = new SpawnPicturePayload(id, nbtCompound);
-                    ClientPlayNetworking.send(payload);
-                    System.out.println("payload: "+payload);
-
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println("bufferedImage width: "+bufferedImage.getWidth() + " bufferedImage height: "+bufferedImage.getHeight());
+                    throw new RuntimeException(e);
                 }
+
+//                System.out.println("testing1");
+//                System.out.println("bufferedImage: "+bufferedImage);
+//
+//                MapState mapState1  = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, id, mapState);
+//                System.out.println("mapstate1: "+mapState1);
+//
+//                SpawnPicturePayload payload = new SpawnPicturePayload(id, nbtCompound);
+//                ClientPlayNetworking.send(payload);
+//                System.out.println("payload: "+payload);
+
+//                try {
+//                    //byte[] imageBytes = nativeImage.getBytes();
+//                    //byte[] imageBytes = nativeImage.makePixelArray()
+//                    //BufferedImage bufferedImage = ImageIO.read(imageBytes)
+//
+//                    //System.out.println("nativeImage: "+nativeImage);
+//                    //byte[] imageBytes = nativeImage.getFormat().toString().getBytes();
+//                    //int[] imageBytes = convertImageTo
+//                    //BufferedImage bufferedImage = ImageIO.read(ScreenshotRecorder.SCREENSHOTS_DIRECTORY.getBytes(nativeImage));
+////                    System.out.println("imageBytes: "+imageBytes);
+//                    //BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageBytes));
+//                    //bufferedImage = CreatePicturePayload.crop(bufferedImage, bufferedImage.getHeight(), bufferedImage.getHeight());
+//
+//                    int[] pixels = nativeImage.copyPixelsArgb();
+//                    BufferedImage bufferedImage = new BufferedImage(nativeImage.getWidth(), nativeImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+//                    bufferedImage.setRGB(0, 0, nativeImage.getWidth(), nativeImage.getHeight(), pixels, 0, nativeImage.getWidth());
+//                    bufferedImage = CreatePicturePayload.crop(bufferedImage, bufferedImage.getHeight(), bufferedImage.getHeight());
+//
+//                    System.out.println("testing1");
+//                    System.out.println("bufferedImage: "+bufferedImage);
+//
+//                    MapState mapState1  = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, id, mapState);
+//                    System.out.println("mapstate1: "+mapState1);
+//
+//                    SpawnPicturePayload payload = new SpawnPicturePayload(id, nbtCompound);
+//                    ClientPlayNetworking.send(payload);
+//                    System.out.println("payload: "+payload);
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
             });
         });
     }
