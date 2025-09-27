@@ -4,25 +4,27 @@
     "property": "minecraft:custom_model_data",
     "cases": [
       {
-        "when": "56774",
+        "when": "56775",
         "model":{
-          "type": "minecraft:condition",
-          "property": "minecraft:custom_model_data",
-          "on_true": {
+          "type": "minecraft:model",
+          "model": "photography:item/empty_photographic_paper"
+        },
+        "on_false": {
+          "when": "56776",
+          "model":{
             "type": "minecraft:model",
-            "model": "photography:item/camera"
+            "model": "photography:item/filled_photographic_paper"
           },
           "on_false": {
             "type": "minecraft:model",
-            "model": "minecraft:item/spyglass"
+            "model": "minecraft:item/filled_map"
           }
         }
       }
     ],
-    "model": "photography:item/camera",
     "fallback": {
       "type": "minecraft:model",
-      "model": "minecraft:item/spyglass"
+      "model": "minecraft:item/filled_map"
     }
   },
   "properties": {

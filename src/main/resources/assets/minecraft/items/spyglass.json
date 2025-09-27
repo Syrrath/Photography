@@ -1,0 +1,26 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "cases": [
+      {
+        "when": "56774",
+        "model":{
+            "type": "minecraft:model",
+            "model": "photography:item/camera"
+          },
+          "on_false": {
+            "type": "minecraft:model",
+            "model": "minecraft:item/spyglass"
+          }
+        }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/spyglass"
+    }
+  },
+  "properties": {
+    "hand_animation_on_swap": true
+  }
+}

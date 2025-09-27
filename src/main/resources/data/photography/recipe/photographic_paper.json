@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:paper"
-    },
-    {
-      "item": "minecraft:cyan_dye"
-    },
-    {
-      "item": "minecraft:yellow_dye"
-    },
-    {
-      "item": "minecraft:magenta_dye"
-    }
+    "minecraft:paper",
+    "minecraft:cyan_dye",
+    "minecraft:yellow_dye",
+    "minecraft:magenta_dye"
   ],
   "result": {
     "id": "minecraft:filled_map",
@@ -23,7 +15,11 @@
       "minecraft:custom_data": {
         "isPhotographyEmptyMap":1
       },
-      "minecraft:custom_model_data": 56775,
+      "minecraft:custom_model_data": {
+        "strings": [
+          "56775"
+        ]
+      },
       "minecraft:hide_additional_tooltip": {}
     }
   }
