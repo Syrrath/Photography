@@ -47,17 +47,17 @@ public record CreateMapStatePayload() implements CustomPayload {
 
             for (ServerPlayerEntity otherPlayer : player.server.getPlayerManager().getPlayerList()) {
                 //TODO Debug
-            for (ServerPlayerEntity otherPlayer : player.getServer().getPlayerManager().getPlayerList()) {
-                Photography.LOGGER.info("for ServerPlayerEntity : getPlayerManager");
+                for (ServerPlayerEntity otherPlayer : player.getServer().getPlayerManager().getPlayerList()) {
+                    Photography.LOGGER.info("for ServerPlayerEntity : getPlayerManager");
 
-                PlayCameraShutterSoundPayload payload = new PlayCameraShutterSoundPayload(GlobalPos.create(player.getEntityWorld().getRegistryKey(),player.getBlockPos()));
-                PlayCameraShutterSoundPayload payload = new PlayCameraShutterSoundPayload(GlobalPos.create(player.getWorld().getRegistryKey(),player.getBlockPos()));
-                ServerPlayNetworking.send(otherPlayer,payload);
+                    PlayCameraShutterSoundPayload payload = new PlayCameraShutterSoundPayload(GlobalPos.create(player.getWorld().getRegistryKey(), player.getBlockPos()));
+                    ServerPlayNetworking.send(otherPlayer, payload);
+                }
+
+                CreatePicturePayload payload = new CreatePicturePayload(id, nbtCompound);
+                System.out.println(payload);
+                ServerPlayNetworking.send(player, payload);
             }
-
-            CreatePicturePayload payload = new CreatePicturePayload(id, nbtCompound);
-            System.out.println(payload);
-            ServerPlayNetworking.send(player, payload);
         });
     }
 }
