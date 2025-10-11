@@ -1,14 +1,11 @@
 package net.blouflin.photography.client;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.blouflin.photography.networking.SetUsingPhotographyCameraPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundEvents;
@@ -53,7 +50,6 @@ public class PhotographyHud {
             client.options.hudHidden = true;
             checkIsPhotographyCameraOpen(client);
             if (!isHUDhidden) {
-                //TODO it's broken
                 renderSpyglassOverlay(context, spyglassScale);
             }
             spyglassFlashOpacity = MathHelper.lerp(0.1f * f, spyglassFlashOpacity, 0.025f);
