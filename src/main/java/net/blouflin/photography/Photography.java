@@ -64,7 +64,7 @@ public class Photography implements ModInitializer {
 		}));
         photographicPaper.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(Collections.singletonList(1F), Collections.singletonList(photographicPaper.getComponents().get(DataComponentTypes.CUSTOM_DATA).toString().contains("isPhotographyEmptyMap:1b")), Collections.singletonList("56775"), Collections.singletonList(16383998)));
 		photographicPaper.set(DataComponentTypes.ITEM_NAME, Text.literal("Photographic Paper"));
-		photographicPaper.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
+		// TODO photographicPaper.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
 		entries.addBefore(Items.WRITABLE_BOOK, photographicPaper);
 	}
 }

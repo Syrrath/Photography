@@ -12,7 +12,10 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.util.Identifier;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -37,14 +40,48 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
         client.execute(() -> {
 
             RegistryWrapper.WrapperLookup registryLookup = client.player.getRegistryManager();
-            MapState mapState = MapState.fromNbt(nbtCompound, registryLookup);
+            // TODO MapState mapState = MapState.fromNbt(nbtCompound, registryLookup);
+            MapState mapState = MapState.of(0, 0, (byte) 0, false, false, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("photography", "generated")));
 
             PhotographyHud.CAMERA_SCOPE_TO_RENDER = PhotographyHud.CAMERA_SCOPE_CLEAR;
 
             PhotographyHud.setScreenshotFuture(future);
 
             future.thenRun(() -> {
-                NativeImage nativeImage = ScreenshotRecorder.takeScreenshot(client.getFramebuffer());
+                //NativeImage nativeImage =
+                ScreenshotRecorder.takeScreenshot(client.getFramebuffer(), (nativeImage) -> {
+                    try {
+                        int[] pixels = nativeImage.copyPixelsArgb();
+                        BufferedImage bufferedImage = new BufferedImage(nativeImage.getWidth(), nativeImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                        bufferedImage.setRGB(0, 0, nativeImage.getWidth(), nativeImage.getHeight(), pixels, 0, nativeImage.getWidth());
+
+                        // TODO Debug
+                        System.out.println("testing2");
+
+                        bufferedImage = CreatePicturePayload.crop(bufferedImage, bufferedImage.getHeight(), bufferedImage.getHeight());
+
+                        // TODO Debug
+                        System.out.println("testing3");
+                        System.out.println("bufferedImage: "+bufferedImage);
+
+                        MapState mapState1  = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, id, mapState);
+
+                        // TODO Debug
+                        System.out.println("mapstate1: "+mapState1);
+
+                        SpawnPicturePayload payload = new SpawnPicturePayload(id, nbtCompound);
+                        ClientPlayNetworking.send(payload);
+
+                        // TODO Debug
+                        System.out.println("Cropping succeeded!");
+                        System.out.println("payload: "+payload);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    nativeImage.close();
+                });
+
                 ScreenshotRecorder.saveScreenshot(client.runDirectory, client.getFramebuffer(), (text) -> {});
 
                 PhotographyHud.CAMERA_SCOPE_TO_RENDER = PhotographyHud.CAMERA_SCOPE;
@@ -54,35 +91,35 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
                 // TODO Debug
                 System.out.println("testing1");
 
-                try {
-                    int[] pixels = nativeImage.copyPixelsArgb();
-                    BufferedImage bufferedImage = new BufferedImage(nativeImage.getWidth(), nativeImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
-                    bufferedImage.setRGB(0, 0, nativeImage.getWidth(), nativeImage.getHeight(), pixels, 0, nativeImage.getWidth());
-
-                    // TODO Debug
-                    System.out.println("testing2");
-
-                    bufferedImage = CreatePicturePayload.crop(bufferedImage, bufferedImage.getHeight(), bufferedImage.getHeight());
-
-                    // TODO Debug
-                    System.out.println("testing3");
-                    System.out.println("bufferedImage: "+bufferedImage);
-
-                    MapState mapState1  = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, id, mapState);
-
-                    // TODO Debug
-                    System.out.println("mapstate1: "+mapState1);
-
-                    SpawnPicturePayload payload = new SpawnPicturePayload(id, nbtCompound);
-                    ClientPlayNetworking.send(payload);
-
-                    // TODO Debug
-                    System.out.println("Cropping succeeded!");
-                    System.out.println("payload: "+payload);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    int[] pixels = nativeImage.copyPixelsArgb();
+//                    BufferedImage bufferedImage = new BufferedImage(nativeImage.getWidth(), nativeImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+//                    bufferedImage.setRGB(0, 0, nativeImage.getWidth(), nativeImage.getHeight(), pixels, 0, nativeImage.getWidth());
+//
+//                    // TODO Debug
+//                    System.out.println("testing2");
+//
+//                    bufferedImage = CreatePicturePayload.crop(bufferedImage, bufferedImage.getHeight(), bufferedImage.getHeight());
+//
+//                    // TODO Debug
+//                    System.out.println("testing3");
+//                    System.out.println("bufferedImage: "+bufferedImage);
+//
+//                    MapState mapState1  = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, id, mapState);
+//
+//                    // TODO Debug
+//                    System.out.println("mapstate1: "+mapState1);
+//
+//                    SpawnPicturePayload payload = new SpawnPicturePayload(id, nbtCompound);
+//                    ClientPlayNetworking.send(payload);
+//
+//                    // TODO Debug
+//                    System.out.println("Cropping succeeded!");
+//                    System.out.println("payload: "+payload);
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
             });
         });
     }

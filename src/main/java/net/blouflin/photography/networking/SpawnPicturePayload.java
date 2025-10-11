@@ -13,10 +13,13 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Unit;
 
 import java.util.Collections;
@@ -39,7 +42,8 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
 
         MapIdComponent mapId = new MapIdComponent(id);
         RegistryWrapper.WrapperLookup registryLookup = player.getRegistryManager();
-        MapState mapState = MapState.fromNbt(nbtCompound, registryLookup);
+        // TODO MapState mapState = MapState.fromNbt(nbtCompound, registryLookup);
+        MapState mapState = MapState.of(0, 0, (byte) 0, false, false, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("photography", "generated")));
 
         //player.server.execute(() -> {
         player.getServer().execute(() -> {
@@ -53,7 +57,7 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
             }));
             stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(Collections.singletonList(1F), Collections.singletonList(stack.getComponents().get(DataComponentTypes.CUSTOM_DATA).toString().contains("isPhotographyFilledMap:1b")), Collections.singletonList("56776"), Collections.singletonList(16383998)));
             stack.set(DataComponentTypes.ITEM_NAME, Text.literal("Photography"));
-            stack.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
+            // TODO stack.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
 
             //TODO Debug
             System.out.println(stack);
@@ -66,7 +70,7 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
                 }));
                 //itemStack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(56775));
                 itemStack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(Collections.singletonList(1F), Collections.singletonList(itemStack.getComponents().get(DataComponentTypes.CUSTOM_DATA).toString().contains("isPhotographyEmptyMap:1b")), Collections.singletonList("56775"), Collections.singletonList(16383998)));
-                itemStack.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
+                // TODO itemStack.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
                 itemStack.set(DataComponentTypes.ITEM_NAME, Text.literal("Photographic Paper"));
 
                 int slot = player.getInventory().getSlotWithStack(itemStack);

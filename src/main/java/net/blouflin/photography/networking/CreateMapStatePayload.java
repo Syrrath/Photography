@@ -8,8 +8,11 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.GlobalPos;
 
 public record CreateMapStatePayload() implements CustomPayload {
@@ -40,18 +43,20 @@ public record CreateMapStatePayload() implements CustomPayload {
             nbt.putByte("scale", (byte) 3);
             nbt.put("banners", new NbtList());
             nbt.put("frames", new NbtList());
-            MapState state = MapState.fromNbt(nbt,registryLookup);
+            // TODO MapState state = MapState.fromNbt(nbt,registryLookup);
+            MapState state = MapState.of(0, 0, (byte) 0, false, false, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("photography", "generated")));
 
             NbtCompound nbtCompound = new NbtCompound();
-            nbtCompound = state.writeNbt(nbtCompound, registryLookup);
+            // TODO nbtCompound = state.writeNbt(nbtCompound, registryLookup);
+            //nbtCompound = state.set(nbtCompound, registryLookup);
 
-            for (ServerPlayerEntity otherPlayer : player.server.getPlayerManager().getPlayerList()) {
+            for (ServerPlayerEntity otherPlayer : player.getServer().getPlayerManager().getPlayerList()) {
                 //TODO Debug
-                for (ServerPlayerEntity otherPlayer : player.getServer().getPlayerManager().getPlayerList()) {
-                    Photography.LOGGER.info("for ServerPlayerEntity : getPlayerManager");
+                for (ServerPlayerEntity otherPlayer2 : player.getServer().getPlayerManager().getPlayerList()) {
+                    Photography.LOGGER.info("for ServerPlayerEntity : getPlayerManager" + otherPlayer + otherPlayer2);
 
                     PlayCameraShutterSoundPayload payload = new PlayCameraShutterSoundPayload(GlobalPos.create(player.getWorld().getRegistryKey(), player.getBlockPos()));
-                    ServerPlayNetworking.send(otherPlayer, payload);
+                    ServerPlayNetworking.send(otherPlayer2, payload);
                 }
 
                 CreatePicturePayload payload = new CreatePicturePayload(id, nbtCompound);

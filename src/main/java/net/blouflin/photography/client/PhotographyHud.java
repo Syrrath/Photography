@@ -52,7 +52,8 @@ public class PhotographyHud {
             client.options.hudHidden = true;
             checkIsPhotographyCameraOpen(client);
             if (!isHUDhidden) {
-                renderSpyglassOverlay(context, spyglassScale);
+                //TODO it's broken
+                //renderSpyglassOverlay(context, spyglassScale);
             }
             spyglassFlashOpacity = MathHelper.lerp(0.1f * f, spyglassFlashOpacity, 0.025f);
 
@@ -117,8 +118,8 @@ public class PhotographyHud {
 //        RenderSystem.enableBlend();
 //        RenderSystem.defaultBlendFunc();
 //        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-        context.drawTexture(RenderPipeline.builder().build(), CAMERA_SCOPE_FLASH, k, l, 0.0f, 0.0f, i, j, i, j);
-        context.drawTexture(RenderPipeline.builder().build(), CAMERA_SCOPE_FLASH, k, l, 0.0f, 0.0f, i, j, i, j);
+        //context.drawTexture(RenderPipeline.builder().build(), CAMERA_SCOPE_FLASH, k, l, 0.0f, 0.0f, i, j, i, j);
+        //context.drawTexture(RenderPipeline.builder().build(), CAMERA_SCOPE_FLASH, k, l, 0.0f, 0.0f, i, j, i, j);
 
         //RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, spyglassFlashOpacity);
         //context.drawTexture(RenderLayer::getGuiTexturedOverlay, CAMERA_SCOPE_TO_RENDER, k, l, 0.0f, 0.0f, i, j, i, j);
@@ -129,9 +130,9 @@ public class PhotographyHud {
         //RenderSystem.disableBlend();
 
         //context.fill(RenderLayer.getGuiOverlay(), , Colors.BLACK)
-        context.fill(RenderPipeline.builder().build(), 0, n, context.getScaledWindowWidth(), context.getScaledWindowHeight(), -90);
-        context.fill(RenderPipeline.builder().build(), 0, 0, context.getScaledWindowWidth(), l, -90);
-        context.fill(RenderPipeline.builder().build(), 0, l, k, n, -90);
-        context.fill(RenderPipeline.builder().build(), m, l, context.getScaledWindowWidth(), n, -90);
+        //context.fill(RenderPipeline.builder().build(), 0, n, context.getScaledWindowWidth(), context.getScaledWindowHeight(), -90);
+        //context.fill(RenderPipeline.builder().build(), 0, 0, context.getScaledWindowWidth(), l, -90);
+        //context.fill(RenderPipeline.builder().build(), 0, l, k, n, -90);
+        //context.fill(RenderPipeline.builder().build(), m, l, context.getScaledWindowWidth(), n, -90);
     }
 }

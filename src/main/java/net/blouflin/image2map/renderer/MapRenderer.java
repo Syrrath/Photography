@@ -9,8 +9,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.map.MapState;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -51,7 +54,7 @@ public class MapRenderer {
         //int id = world.getNextMapId().id();
         MapIdComponent id = world.increaseAndGetMapId();
         NbtCompound nbt = new NbtCompound();
-        RegistryWrapper.WrapperLookup registryLookup = world.getRegistryManager();
+        //RegistryWrapper.WrapperLookup registryLookup = RegistryKey.of(RegistryKeys.WORLD, Identifier.of("photography", "generated"))
 
         nbt.putString("dimension", world.getRegistryKey().getValue().toString());
         nbt.putInt("xCenter", (int) x);
@@ -60,7 +63,8 @@ public class MapRenderer {
         nbt.putBoolean("unlimitedTracking", false);
         nbt.putBoolean("trackingPosition", false);
         nbt.putByte("scale", (byte) 3);
-        MapState state = MapState.fromNbt(nbt, registryLookup);
+        // TODO
+        MapState state = MapState.of(0, 0, (byte) 0, false, false, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("photography", "generated")));
         //world.putMapState(FilledMapItem.getMapName(id), state);
         world.putMapState(id, state);
         //stack.getOrCreateNbt().putInt("map", id);
