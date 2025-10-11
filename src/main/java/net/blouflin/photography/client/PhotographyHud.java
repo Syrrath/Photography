@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.blouflin.photography.networking.SetUsingPhotographyCameraPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.RenderLayer;
@@ -53,7 +54,7 @@ public class PhotographyHud {
             checkIsPhotographyCameraOpen(client);
             if (!isHUDhidden) {
                 //TODO it's broken
-                //renderSpyglassOverlay(context, spyglassScale);
+                renderSpyglassOverlay(context, spyglassScale);
             }
             spyglassFlashOpacity = MathHelper.lerp(0.1f * f, spyglassFlashOpacity, 0.025f);
 
@@ -121,18 +122,27 @@ public class PhotographyHud {
         //context.drawTexture(RenderPipeline.builder().build(), CAMERA_SCOPE_FLASH, k, l, 0.0f, 0.0f, i, j, i, j);
         //context.drawTexture(RenderPipeline.builder().build(), CAMERA_SCOPE_FLASH, k, l, 0.0f, 0.0f, i, j, i, j);
 
+
         //RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, spyglassFlashOpacity);
         //context.drawTexture(RenderLayer::getGuiTexturedOverlay, CAMERA_SCOPE_TO_RENDER, k, l, 0.0f, 0.0f, i, j, i, j);
-        context.drawTexture(RenderPipeline.builder().build(), CAMERA_SCOPE_TO_RENDER, k, l, 0.0f, 0.0f, i, j, i, j);
+        //context.drawTexture(RenderPipeline.builder().build(), CAMERA_SCOPE_TO_RENDER, k, l, 0.0f, 0.0f, i, j, i, j);
 
         //RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         //RenderSystem.disableBlend();
 
         //context.fill(RenderLayer.getGuiOverlay(), , Colors.BLACK)
-        //context.fill(RenderPipeline.builder().build(), 0, n, context.getScaledWindowWidth(), context.getScaledWindowHeight(), -90);
-        //context.fill(RenderPipeline.builder().build(), 0, 0, context.getScaledWindowWidth(), l, -90);
-        //context.fill(RenderPipeline.builder().build(), 0, l, k, n, -90);
-        //context.fill(RenderPipeline.builder().build(), m, l, context.getScaledWindowWidth(), n, -90);
+        context.fill(RenderPipelines.GUI, 0, n, context.getScaledWindowWidth(), context.getScaledWindowHeight(), Colors.BLACK);
+        context.fill(RenderPipelines.GUI, 0, 0, context.getScaledWindowWidth(), l, Colors.BLACK);
+        context.fill(RenderPipelines.GUI, 0, l, k, n, Colors.BLACK);
+        context.fill(RenderPipelines.GUI, m, l, context.getScaledWindowWidth(), n, Colors.BLACK);
+        if(isTakingPhoto) {
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, CAMERA_SCOPE_FLASH, k, l, 0.0f, 0.0f, i, j, i, j);
+        }
+
+
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, CAMERA_SCOPE_TO_RENDER, k, l, 0.0f, 0.0f, i, j, i, j);
+
+
     }
 }
