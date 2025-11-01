@@ -29,6 +29,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public record CreateMapStatePayload() implements CustomPayload {
     public static final CustomPayload.Id<CreateMapStatePayload> ID = CustomPayload.id("photography_create_map_state");
@@ -52,8 +53,8 @@ public record CreateMapStatePayload() implements CustomPayload {
 
             world.putMapState(id, state);
 
-            NbtCompound nbtCompound = new NbtCompound();
-
+            NbtCompound nbtCompound = new NbtCompound().getCompoundOrEmpty(state.toString());
+            System.out.println("Printing NbtCompound from CreateMapStatePayload: " + nbtCompound);
 //            nbtCompound = state.writeNbt(nbtCompound, registryLookup);
 //            nbtCompound =
 
