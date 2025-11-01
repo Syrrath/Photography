@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.CustomModelDataComponent;
+import net.minecraft.component.type.MapIdComponent;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
@@ -67,4 +68,8 @@ public class Photography implements ModInitializer {
 		// TODO photographicPaper.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
 		entries.addBefore(Items.WRITABLE_BOOK, photographicPaper);
 	}
+
+    private void countMaps(MapIdComponent id) {
+        // create a list of maps made using the mod with an associated timestamp
+    }
 }
