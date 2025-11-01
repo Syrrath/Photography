@@ -45,6 +45,8 @@ public record CreateMapStatePayload() implements CustomPayload {
             NbtCompound nbtCompound = new NbtCompound();
             nbtCompound = state.writeNbt(nbtCompound, registryLookup);
 
+            System.out.println("Printing nbtCompound from CreateMapStatePayload: " + nbtCompound + "\nPrinting nbt from CreateMapStatePayload: " + nbt);
+
             for (ServerPlayerEntity otherPlayer : player.server.getPlayerManager().getPlayerList()) {
                 //TODO Debug
                 Photography.LOGGER.info("for ServerPlayerEntity : getPlayerManager");
