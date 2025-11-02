@@ -47,13 +47,28 @@ public record CreateMapStatePayload() implements CustomPayload {
 
         player.getServer().execute(() -> {
 
+            NbtCompound nbt = new NbtCompound();
+            RegistryWrapper.WrapperLookup registryLookup = player.getRegistryManager();
+            nbt.putString("dimension", player.getWorld().getRegistryKey().getValue().toString());
+            nbt.putInt("xCenter", (int) player.getX());
+            nbt.putInt("zCenter", (int) player.getZ());
+            nbt.putBoolean("locked", true);
+            nbt.putBoolean("unlimitedTracking", false);
+            nbt.putBoolean("trackingPosition", false);
+            nbt.putByte("scale", (byte) 3);
+            nbt.put("banners", new NbtList());
+            nbt.put("frames", new NbtList());
+            System.out.println("Printing nbt from CreateMapStatePayload: " + nbt);
+
             ServerWorld world = player.getWorld();
             MapIdComponent id = world.increaseAndGetMapId();
             MapState state = MapState.of(player.getX(), player.getZ(), (byte) 3, false, false, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("image2map", "generated")));
+            System.out.println("Printing MapState state from CreateMapStatePayload: " + state.toString());
 
             world.putMapState(id, state);
 
-            NbtCompound nbtCompound = new NbtCompound().getCompoundOrEmpty(state.toString());
+            NbtCompound nbtCompound = new NbtCompound();
+            nbtCompound = nbt;
             System.out.println("Printing NbtCompound from CreateMapStatePayload: " + nbtCompound);
 //            nbtCompound = state.writeNbt(nbtCompound, registryLookup);
 //            nbtCompound =

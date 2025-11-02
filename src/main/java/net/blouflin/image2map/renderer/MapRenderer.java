@@ -139,6 +139,7 @@ public class MapRenderer {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 imageColor = new Color(pixels[j][i], true);
+                //System.out.println("printing color: " + imageColor);
                 if (mode.equals(Image2Map.DitherMode.FLOYD))
                     state.colors[i + j * width] = (byte) floydDither(mapColors, pixels, i, j, imageColor);
                 else

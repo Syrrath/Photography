@@ -34,6 +34,7 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
 
         // TODO Debug
         System.out.println("running CreatePicturePayload");
+        System.out.println("Printing nbtCompound from CreatePicturePayload: " + nbtCompound);
 
         CompletableFuture<Void> future = new CompletableFuture<>();
 
@@ -41,20 +42,32 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
 
             RegistryWrapper.WrapperLookup registryLookup = client.player.getRegistryManager();
             // TODO MapState mapState = MapState.fromNbt(nbtCompound, registryLookup);
-            MapState mapState = MapState.of(0, 0, (byte) 0, false, false, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("photography", "generated")));
+            MapState mapState = MapState.of(nbtCompound.getDouble("xCenter", 0), nbtCompound.getDouble("zCenter", 0), nbtCompound.getByte("scale", (byte) 3), false, false, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("photography", "generated")));
+            System.out.println("Printing MapState from CreatePicturePayload after retrieving x- and z-Center from nbtCompound: " + mapState);
 
             PhotographyHud.CAMERA_SCOPE_TO_RENDER = PhotographyHud.CAMERA_SCOPE_CLEAR;
 
             PhotographyHud.setScreenshotFuture(future);
 
             future.thenRun(() -> {
-                //NativeImage nativeImage =
-                ScreenshotRecorder.takeScreenshot(client.getFramebuffer(), (nativeImage) -> {
-                    try {
-                        int[] pixels = nativeImage.copyPixelsArgb();
-                        BufferedImage bufferedImage = new BufferedImage(nativeImage.getWidth(), nativeImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
-                        bufferedImage.setRGB(0, 0, nativeImage.getWidth(), nativeImage.getHeight(), pixels, 0, nativeImage.getWidth());
 
+                //ScreenshotRecorder.saveScreenshot(client.runDirectory, client.getFramebuffer(), (text) -> {});
+
+                PhotographyHud.CAMERA_SCOPE_TO_RENDER = PhotographyHud.CAMERA_SCOPE;
+                PhotographyHud.spyglassFlashOpacity = 1.0f;
+                PhotographyHud.isTakingPhoto = false;
+
+
+                ScreenshotRecorder.takeScreenshot(client.getFramebuffer(), (nativeImage -> {
+                    int[] pixels = nativeImage.copyPixelsArgb();
+                    BufferedImage bufferedImage = new BufferedImage(nativeImage.getWidth(), nativeImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                    bufferedImage.setRGB(0, 0, nativeImage.getWidth(), nativeImage.getHeight(), pixels, 0, nativeImage.getWidth());
+                    System.out.println("bufferedImage: "+bufferedImage);
+                    nativeImage.close();
+
+                    ScreenshotRecorder.saveScreenshot(client.runDirectory, client.getFramebuffer(), (text) -> {});
+
+                    try {
                         // TODO Debug
                         System.out.println("testing2");
 
@@ -64,7 +77,7 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
                         System.out.println("testing3");
                         System.out.println("bufferedImage: "+bufferedImage);
 
-                        MapState mapState1  = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, id, mapState);
+                        MapState mapState1 = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, id, mapState);
 
                         // TODO Debug
                         System.out.println("mapstate1: "+mapState1);
@@ -79,17 +92,60 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    nativeImage.close();
-                });
+                }));
 
-                ScreenshotRecorder.saveScreenshot(client.runDirectory, client.getFramebuffer(), (text) -> {});
+//                ScreenshotRecorder.takeScreenshot(client.getFramebuffer(), (nativeImage -> {
+//                    int[] pixels = nativeImage.copyPixelsArgb();
+//                    BufferedImage bufferedImage1 = new BufferedImage(nativeImage.getWidth(), nativeImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+//                    bufferedImage1.setRGB(0, 0, nativeImage.getWidth(), nativeImage.getHeight(), pixels, 0, nativeImage.getWidth());
+//                    return bufferedImage1;
+//                    nativeImage.close();
+//                }));
 
-                PhotographyHud.CAMERA_SCOPE_TO_RENDER = PhotographyHud.CAMERA_SCOPE;
-                PhotographyHud.spyglassFlashOpacity = 1.0f;
-                PhotographyHud.isTakingPhoto = false;
 
-                // TODO Debug
-                System.out.println("testing1");
+
+//                NativeImage nativeImage = ScreenshotRecorder.takeScreenshot(client.getFramebuffer(), );
+//                ScreenshotRecorder.takeScreenshot(client.getFramebuffer(), (nativeImage) -> {
+//                    try {
+//                        int[] pixels = nativeImage.copyPixelsArgb();
+//                        BufferedImage bufferedImage = new BufferedImage(nativeImage.getWidth(), nativeImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+//                        bufferedImage.setRGB(0, 0, nativeImage.getWidth(), nativeImage.getHeight(), pixels, 0, nativeImage.getWidth());
+//
+//                        // TODO Debug
+//                        System.out.println("testing2");
+//
+//                        bufferedImage = CreatePicturePayload.crop(bufferedImage, bufferedImage.getHeight(), bufferedImage.getHeight());
+//
+//                        // TODO Debug
+//                        System.out.println("testing3");
+//                        System.out.println("bufferedImage: "+bufferedImage);
+//
+//                        MapState mapState1  = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, id, mapState);
+//
+//                        // TODO Debug
+//                        System.out.println("mapstate1: "+mapState1);
+//
+//                        SpawnPicturePayload payload = new SpawnPicturePayload(id, nbtCompound);
+//                        ClientPlayNetworking.send(payload);
+//
+//                        // TODO Debug
+//                        System.out.println("Cropping succeeded!");
+//                        System.out.println("payload: "+payload);
+//
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    nativeImage.close();
+//                });
+
+//                ScreenshotRecorder.saveScreenshot(client.runDirectory, client.getFramebuffer(), (text) -> {});
+//
+//                PhotographyHud.CAMERA_SCOPE_TO_RENDER = PhotographyHud.CAMERA_SCOPE;
+//                PhotographyHud.spyglassFlashOpacity = 1.0f;
+//                PhotographyHud.isTakingPhoto = false;
+//
+//                // TODO Debug
+//                System.out.println("testing1");
 
 //                try {
 //                    int[] pixels = nativeImage.copyPixelsArgb();
