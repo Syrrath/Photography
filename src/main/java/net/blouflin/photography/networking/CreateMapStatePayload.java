@@ -2,6 +2,7 @@ package net.blouflin.photography.networking;
 
 import net.blouflin.image2map.Image2Map;
 import net.blouflin.photography.Photography;
+import net.blouflin.photography.PhotographyUtil;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.MapColor;
 import net.minecraft.component.DataComponentTypes;
@@ -62,13 +63,15 @@ public record CreateMapStatePayload() implements CustomPayload {
 
             ServerWorld world = player.getWorld();
             MapIdComponent id = world.increaseAndGetMapId();
-            MapState state = MapState.of(player.getX(), player.getZ(), (byte) 3, false, false, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("image2map", "generated")));
+            //MapState state = MapState.of(player.getX(), player.getZ(), (byte) 3, false, false, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("image2map", "generated")));
+            MapState state = PhotographyUtil.fromNbt(nbt);
             System.out.println("Printing MapState state from CreateMapStatePayload: " + state.toString());
 
             world.putMapState(id, state);
 
             NbtCompound nbtCompound = new NbtCompound();
-            nbtCompound = nbt;
+            nbtCompound = PhotographyUtil.writeNbt(nbt, state);
+            //nbtCompound = nbt;
             System.out.println("Printing NbtCompound from CreateMapStatePayload: " + nbtCompound);
 //            nbtCompound = state.writeNbt(nbtCompound, registryLookup);
 //            nbtCompound =

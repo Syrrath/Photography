@@ -1,6 +1,7 @@
 package net.blouflin.photography.networking;
 
 import net.blouflin.photography.Photography;
+import net.blouflin.photography.PhotographyUtil;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.component.type.MapIdComponent;
@@ -39,11 +40,13 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
 
         //TODO Debug
         Photography.LOGGER.info("running SpawnPicturePayload.receive");
+        System.out.println("Printing nbtCompound from the top of SpawnPicturePayload: " + nbtCompound);
 
         MapIdComponent mapId = new MapIdComponent(id);
         RegistryWrapper.WrapperLookup registryLookup = player.getRegistryManager();
         // TODO MapState mapState = MapState.fromNbt(nbtCompound, registryLookup);
-        MapState mapState = MapState.of(0, 0, (byte) 0, false, false, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("photography", "generated")));
+        MapState mapState = PhotographyUtil.fromNbt(nbtCompound);
+        //MapState mapState = MapState.of(0, 0, (byte) 0, false, false, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("photography", "generated")));
 
         //player.server.execute(() -> {
         player.getServer().execute(() -> {

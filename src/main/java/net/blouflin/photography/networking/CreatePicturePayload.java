@@ -2,6 +2,7 @@ package net.blouflin.photography.networking;
 
 import net.blouflin.image2map.Image2Map;
 import net.blouflin.image2map.renderer.MapRenderer;
+import net.blouflin.photography.PhotographyUtil;
 import net.blouflin.photography.client.PhotographyHud;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
@@ -42,7 +43,8 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
 
             RegistryWrapper.WrapperLookup registryLookup = client.player.getRegistryManager();
             // TODO MapState mapState = MapState.fromNbt(nbtCompound, registryLookup);
-            MapState mapState = MapState.of(nbtCompound.getDouble("xCenter", 0), nbtCompound.getDouble("zCenter", 0), nbtCompound.getByte("scale", (byte) 3), false, false, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("photography", "generated")));
+            //MapState mapState = MapState.of(nbtCompound.getDouble("xCenter", 0), nbtCompound.getDouble("zCenter", 0), nbtCompound.getByte("scale", (byte) 3), false, false, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("photography", "generated")));
+            MapState mapState = PhotographyUtil.fromNbt(nbtCompound);
             System.out.println("Printing MapState from CreatePicturePayload after retrieving x- and z-Center from nbtCompound: " + mapState);
 
             PhotographyHud.CAMERA_SCOPE_TO_RENDER = PhotographyHud.CAMERA_SCOPE_CLEAR;
