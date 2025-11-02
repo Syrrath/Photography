@@ -40,7 +40,7 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
 
         //TODO Debug
         Photography.LOGGER.info("running SpawnPicturePayload.receive");
-        System.out.println("Printing nbtCompound from the top of SpawnPicturePayload: " + nbtCompound);
+        //System.out.println("Printing nbtCompound from the top of SpawnPicturePayload: " + nbtCompound);
 
         MapIdComponent mapId = new MapIdComponent(id);
         RegistryWrapper.WrapperLookup registryLookup = player.getRegistryManager();
@@ -63,7 +63,7 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
             // TODO stack.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
 
             //TODO Debug
-            System.out.println(stack);
+            //System.out.println(stack);
             player.getInventory().insertStack(stack);
 
             if(!player.isCreative()) {
