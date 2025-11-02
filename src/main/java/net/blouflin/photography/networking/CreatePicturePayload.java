@@ -77,7 +77,9 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
                         System.out.println("testing3");
                         System.out.println("bufferedImage: "+bufferedImage);
 
+                        System.out.println("Printing nbtCompound from CreatePicturePayload: " + nbtCompound);
                         MapState mapState1 = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, id, mapState);
+                        System.out.println("Printing nbtCompound from CreatePicturePayload after: " + nbtCompound);
 
                         // TODO Debug
                         System.out.println("mapstate1: "+mapState1);
