@@ -46,7 +46,7 @@ public record CreateMapStatePayload() implements CustomPayload {
         // TODO Debug
         //System.out.println("running CreateMapStatePayload");
 
-        player.getServer().execute(() -> {
+        player.getEntityWorld().getServer().execute(() -> {
 
             NbtCompound nbt = new NbtCompound();
             RegistryWrapper.WrapperLookup registryLookup = player.getRegistryManager();
@@ -71,9 +71,9 @@ public record CreateMapStatePayload() implements CustomPayload {
             nbtCompound = PhotographyUtil.writeNbt(nbt, state);
 
 
-            for (ServerPlayerEntity otherPlayer : player.getServer().getPlayerManager().getPlayerList()) {
+            for (ServerPlayerEntity otherPlayer : player.getEntityWorld().getServer().getPlayerManager().getPlayerList()) {
                 //TODO Debug
-                for (ServerPlayerEntity otherPlayer2 : player.getServer().getPlayerManager().getPlayerList()) {
+                for (ServerPlayerEntity otherPlayer2 : player.getEntityWorld().getServer().getPlayerManager().getPlayerList()) {
                     Photography.LOGGER.info("for ServerPlayerEntity : getPlayerManager" + otherPlayer + otherPlayer2);
 
                     PlayCameraShutterSoundPayload payload = new PlayCameraShutterSoundPayload(GlobalPos.create(player.getEntityWorld().getRegistryKey(), player.getBlockPos()));

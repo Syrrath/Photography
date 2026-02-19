@@ -49,7 +49,7 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
         //MapState mapState = MapState.of(0, 0, (byte) 0, false, false, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("photography", "generated")));
 
         //player.server.execute(() -> {
-        player.getServer().execute(() -> {
+        player.getEntityWorld().getServer().execute(() -> {
 
             ItemStack stack = new ItemStack(Items.FILLED_MAP);
             player.getEntityWorld().putMapState(mapId, mapState);
