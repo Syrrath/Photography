@@ -26,6 +26,7 @@
 			"net.blouflin.photography.PhotographyDataGenerator"
 		]
 	},
+    "accessWidener": "photography.classtweaker",
 	"mixins": [
 		"photography.mixins.json"
 	],

@@ -3,6 +3,7 @@ package net.blouflin.photography;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.DataResult;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.map.*;
 import net.minecraft.nbt.NbtCompound;
@@ -12,13 +13,17 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryOps;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.dimension.DimensionTypes;
 import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class PhotographyUtil {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -53,10 +58,14 @@ public class PhotographyUtil {
     }
 
     public static MapState fromNbt(NbtCompound nbt/*, RegistryWrapper.WrapperLookup registries*/) {
-//        DataResult var10000 = DimensionType.worldFromDimensionNbt(new Dynamic(NbtOps.INSTANCE, nbt.get("dimension")));
+        //DataResult var10000 = DimensionType.worldFromDimensionNbt(new Dynamic(NbtOps.INSTANCE, nbt.get("dimension")));
+//        DataResult var10000 = DimensionType.REGISTRY_CODEC.decode(new Dynamic(NbtOps.INSTANCE, nbt.get("dimension")));
 //        Logger var10001 = LOGGER;
 //        Objects.requireNonNull(var10001);
+//        RegistryKeys.toDimensionKey((RegistryKey)var10000.resultOrPartial(var10001::error).orElseThrow(() -> new IllegalArgumentException("Invalid map dimension: " + String.valueOf(nbt.get("dimension"))));)
+//        RegistryKey<World> registryKey = (RegistryKey)var10000;
 //        RegistryKey<World> registryKey = (RegistryKey)var10000.resultOrPartial(var10001::error).orElseThrow(() -> new IllegalArgumentException("Invalid map dimension: " + String.valueOf(nbt.get("dimension"))));
+        String w = nbt.getString("dimension", String.valueOf(DimensionTypes.OVERWORLD));
         int i = nbt.getInt("xCenter", 0);
         int j = nbt.getInt("zCenter", 0);
         byte b = (byte) MathHelper.clamp(nbt.getByte("scale", (byte) 3), 0, 4);
@@ -92,16 +101,17 @@ public class PhotographyUtil {
 
 
     public static NbtCompound writeNbt(NbtCompound nbt, MapState state/*, RegistryWrapper.WrapperLookup registries*/) {
-//        DataResult var10000 = Identifier.CODEC.encodeStart(NbtOps.INSTANCE, this.dimension.getValue());
-//        Logger var10001 = LOGGER;
-//        Objects.requireNonNull(var10001);
-//        var10000.resultOrPartial(var10001::error).ifPresent((dimension) -> nbt.put("dimension", dimension));
+        DataResult var10000 = Identifier.CODEC.encodeStart(NbtOps.INSTANCE, state.dimension.getValue());
+        Logger var10001 = LOGGER;
+        Objects.requireNonNull(var10001);
+        //var10000.resultOrPartial(var10001::error).ifPresent((dimension) -> nbt.put("dimension", dimension));
+        //nbt.put("dimension", var10000.resultOrPartial().ifPresent((dimension) -> nbt.put("dimension", (NbtElement) dimension));
         nbt.putInt("xCenter", state.centerX);
         nbt.putInt("zCenter", state.centerZ);
         nbt.putByte("scale", state.scale);
         nbt.putByteArray("colors", state.colors);
-//        nbt.putBoolean("trackingPosition", this.showDecorations);
-//        nbt.putBoolean("unlimitedTracking", this.unlimitedTracking);
+        nbt.putBoolean("trackingPosition", state.showDecorations);
+        nbt.putBoolean("unlimitedTracking", state.unlimitedTracking);
         nbt.putBoolean("locked", state.locked);
 //        RegistryOps<NbtElement> registryOps = registries.getOps(NbtOps.INSTANCE);
 //        nbt.put("banners", (NbtElement)MapBannerMarker.LIST_CODEC.encodeStart(registryOps, List.copyOf(this.banners.values())).getOrThrow());

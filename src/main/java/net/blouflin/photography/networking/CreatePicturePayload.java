@@ -67,13 +67,14 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
                     //System.out.println("bufferedImage: "+bufferedImage);
                     nativeImage.close();
 
-                    ScreenshotRecorder.saveScreenshot(client.runDirectory, client.getFramebuffer(), (text) -> {});
+
 
                     try {
                         // TODO Debug
                         //System.out.println("testing2");
 
                         bufferedImage = CreatePicturePayload.crop(bufferedImage, bufferedImage.getHeight(), bufferedImage.getHeight());
+                        ScreenshotRecorder.saveScreenshot(client.runDirectory, client.getFramebuffer(), (text) -> {});
 
                         // TODO Debug
                        // System.out.println("testing3");

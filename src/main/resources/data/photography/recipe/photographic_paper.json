@@ -13,7 +13,7 @@
     "components": {
       "minecraft:item_name": "{\"text\":\"Photographic Paper\"}",
       "minecraft:custom_data": {
-        "isPhotographyEmptyMap":1
+        "isPhotographyEmptyMap":true
       },
       "minecraft:custom_model_data": {
         "strings": [

@@ -63,9 +63,7 @@ public record CreateMapStatePayload() implements CustomPayload {
 
             ServerWorld world = player.getWorld();
             MapIdComponent id = world.increaseAndGetMapId();
-            //MapState state = MapState.of(player.getX(), player.getZ(), (byte) 3, false, false, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("image2map", "generated")));
             MapState state = PhotographyUtil.fromNbt(nbt);
-            //System.out.println("Printing MapState state from CreateMapStatePayload: " + state.toString());
 
             world.putMapState(id, state);
 
