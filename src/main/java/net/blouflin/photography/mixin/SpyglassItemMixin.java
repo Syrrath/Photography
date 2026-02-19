@@ -28,7 +28,7 @@ public abstract class SpyglassItemMixin {
     private void injected(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
         cir.setReturnValue(new ActionResult.Pass());
 
-        if (world.isClient) {
+        if (world.isClient()) {
 
             boolean isPhotographyCamera = false;
             String toContain = "isPhotographyCamera:1b";

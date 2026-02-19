@@ -67,7 +67,7 @@ public class Photography implements ModInitializer {
 		photographicPaper.set(DataComponentTypes.ITEM_NAME, Text.literal("Photographic Paper"));
 		// TODO photographicPaper.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
         //photographicPaper.set(DataComponentTypes.TOOLTIP_DISPLAY, Unit.INSTANCE);
-		photographicPaper.set(DataComponentTypes.TOOLTIP_STYLE, Unit.INSTANCE);
+		//photographicPaper.set(DataComponentTypes.TOOLTIP_STYLE, Unit.INSTANCE);
 		entries.addBefore(Items.WRITABLE_BOOK, photographicPaper);
 	}
 

@@ -33,7 +33,7 @@ public class PhotographyHud {
     public static final Identifier CAMERA_SCOPE_FLASH = Identifier.of("photography","textures/misc/camera_scope_flash.png");
     public static Identifier CAMERA_SCOPE_TO_RENDER = CAMERA_SCOPE;
     public static final MinecraftClient client = MinecraftClient.getInstance();
-    private static final KeyBinding escapeKeybinding = new KeyBinding("key.keyboard.escape", GLFW.GLFW_KEY_ESCAPE, KeyBinding.UI_CATEGORY);
+    private static final KeyBinding escapeKeybinding = new KeyBinding("key.keyboard.escape", GLFW.GLFW_KEY_ESCAPE, KeyBinding.Category.MISC);
 
     private static CompletableFuture<Void> screenshotFuture;
     public static void setScreenshotFuture(CompletableFuture<Void> future) {

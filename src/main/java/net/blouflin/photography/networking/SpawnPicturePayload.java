@@ -52,7 +52,7 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
         player.getServer().execute(() -> {
 
             ItemStack stack = new ItemStack(Items.FILLED_MAP);
-            player.getWorld().putMapState(mapId, mapState);
+            player.getEntityWorld().putMapState(mapId, mapState);
             //player.getEntityWorld().putMapState(mapId, mapState);
             stack.set(DataComponentTypes.MAP_ID, mapId);
             stack.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
@@ -89,8 +89,8 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
                 if (player.getInventory().insertStack(stack)) {
                     player.getInventory().insertStack(stack);
                 } else {
-                    ItemEntity itemEntity = new ItemEntity(player.getWorld(), player.getPos().x, player.getPos().y, player.getPos().z, stack);
-                    player.getWorld().spawnEntity(itemEntity);
+                    ItemEntity itemEntity = new ItemEntity(player.getEntityWorld(), player.getEntityPos().x, player.getEntityPos().y, player.getEntityPos().z, stack);
+                    player.getEntityWorld().spawnEntity(itemEntity);
                 }
             }
         });
@@ -102,8 +102,8 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
         if (player.getInventory().insertStack(stack)) {
             player.getInventory().insertStack(stack);
         } else {
-            ItemEntity itemEntity = new ItemEntity(player.getWorld(), player.getPos().x, player.getPos().y, player.getPos().z, stack);
-            player.getWorld().spawnEntity(itemEntity);
+            ItemEntity itemEntity = new ItemEntity(player.getEntityWorld(), player.getEntityPos().x, player.getEntityPos().y, player.getEntityPos().z, stack);
+            player.getEntityWorld().spawnEntity(itemEntity);
         }
     }
 }
