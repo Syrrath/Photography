@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
+import java.util.List;
 
 public class Photography implements ModInitializer {
 	public static final String MOD_ID = "Photography";
@@ -55,7 +56,8 @@ public class Photography implements ModInitializer {
 		photographyCamera.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
 			currentNbt.putBoolean("isPhotographyCamera",true);
 		}));
-        photographyCamera.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(Collections.singletonList(1F), Collections.singletonList(photographyCamera.getComponents().get(DataComponentTypes.CUSTOM_DATA).toString().contains("isPhotographyCamera:1b")), Collections.singletonList("56774"), Collections.singletonList(16383998)));
+        //photographyCamera.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(Collections.singletonList(1F), Collections.singletonList(photographyCamera.getComponents().get(DataComponentTypes.CUSTOM_DATA).toString().contains("isPhotographyCamera:1b")), Collections.singletonList("56774"), Collections.singletonList(16383998)));
+		photographyCamera.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(List.of(), Collections.singletonList(photographyCamera.getComponents().get(DataComponentTypes.CUSTOM_DATA).toString().contains("isPhotographyCamera:1b")), List.of("isPhotographyCamera"), List.of(56774)));
 		photographyCamera.set(DataComponentTypes.ITEM_NAME, Text.literal("Camera"));
 		entries.addAfter(Items.MAP, photographyCamera);
 
@@ -63,7 +65,8 @@ public class Photography implements ModInitializer {
 		photographicPaper.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
 			currentNbt.putBoolean("isPhotographyEmptyMap",true);
 		}));
-        photographicPaper.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(Collections.singletonList(1F), Collections.singletonList(photographicPaper.getComponents().get(DataComponentTypes.CUSTOM_DATA).toString().contains("isPhotographyEmptyMap:1b")), Collections.singletonList("56775"), Collections.singletonList(16383998)));
+        //photographicPaper.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(Collections.singletonList(1F), Collections.singletonList(photographicPaper.getComponents().get(DataComponentTypes.CUSTOM_DATA).toString().contains("isPhotographyEmptyMap:1b")), Collections.singletonList("56775"), Collections.singletonList(16383998)));
+		photographicPaper.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(List.of(), Collections.singletonList(photographicPaper.getComponents().get(DataComponentTypes.CUSTOM_DATA).toString().contains("isPhotographyEmptyMap:1b")), List.of("isPhotographyEmptyMap"), List.of(56775)));
 		photographicPaper.set(DataComponentTypes.ITEM_NAME, Text.literal("Photographic Paper"));
 		// TODO photographicPaper.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
         //photographicPaper.set(DataComponentTypes.TOOLTIP_DISPLAY, Unit.INSTANCE);
