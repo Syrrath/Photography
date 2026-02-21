@@ -35,7 +35,7 @@ public class Photography implements ModInitializer {
 
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(this::addItemsToCreativeTab);
 
-		Registry.register(Registries.SOUND_EVENT, CAMERA_SHUTTER_SOUND, CAMERA_SHUTTER);
+//		Registry.register(Registries.SOUND_EVENT, CAMERA_SHUTTER_SOUND, CAMERA_SHUTTER);
 
 		PayloadTypeRegistry.playS2C().register(CreatePicturePayload.ID, CreatePicturePayload.CODEC);
 		PayloadTypeRegistry.playS2C().register(GetUsingPhotographyCameraPayload.ID, GetUsingPhotographyCameraPayload.CODEC);
