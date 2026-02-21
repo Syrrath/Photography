@@ -14,14 +14,10 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Unit;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -39,21 +35,17 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
     public static void receive(ServerPlayerEntity player, Integer id, NbtCompound nbtCompound) {
 
         //TODO Debug
-        Photography.LOGGER.info("running SpawnPicturePayload.receive");
+        //Photography.LOGGER.info("running SpawnPicturePayload.receive");
         //System.out.println("Printing nbtCompound from the top of SpawnPicturePayload: " + nbtCompound);
 
         MapIdComponent mapId = new MapIdComponent(id);
         RegistryWrapper.WrapperLookup registryLookup = player.getRegistryManager();
-        // TODO MapState mapState = MapState.fromNbt(nbtCompound, registryLookup);
-        MapState mapState = PhotographyUtil.fromNbt(nbtCompound);
-        //MapState mapState = MapState.of(0, 0, (byte) 0, false, false, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("photography", "generated")));
+        MapState mapState = PhotographyUtil.fromNbt(nbtCompound); //TODO fromNbt(nbtCompound, registryLookup);
 
-        //player.server.execute(() -> {
         player.getEntityWorld().getServer().execute(() -> {
 
             ItemStack stack = new ItemStack(Items.FILLED_MAP);
             player.getEntityWorld().putMapState(mapId, mapState);
-            //player.getEntityWorld().putMapState(mapId, mapState);
             stack.set(DataComponentTypes.MAP_ID, mapId);
             stack.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
                 currentNbt.putBoolean("isPhotographyFilledMap",true);
@@ -79,7 +71,7 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
                 int slot = player.getInventory().getSlotWithStack(itemStack);
                 if(slot != -1) {
                     convertStack(player, slot, stack);
-                } else if (player.getStackInHand(Hand.OFF_HAND).getItem() == itemStack.getItem()) {
+                } else if (player.getStackInHand(Hand.OFF_HAND).getItem() == itemStack.getItem()) { //required to decrement offhand
                     if (Objects.equals(player.getStackInHand(Hand.OFF_HAND).getComponents().get(DataComponentTypes.CUSTOM_DATA), itemStack.getComponents().get(DataComponentTypes.CUSTOM_DATA))) {
                         convertStack(player, 40, stack);
                     }

@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Dynamic;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.map.*;
 import net.minecraft.nbt.NbtCompound;
@@ -13,10 +14,13 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryOps;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.dimension.DimensionTypes;
 import org.slf4j.Logger;
@@ -124,4 +128,67 @@ public class PhotographyUtil {
 //        nbt.put("frames", nbtList);
         return nbt;
     }
+
+//    public static MapState fromNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+//        DataResult var10000 = DimensionType.worldFromDimensionNbt(new Dynamic(NbtOps.INSTANCE, nbt.get("dimension")));
+//        DataResult var10000 = DimensionType.
+//        Logger var10001 = LOGGER;
+//        Objects.requireNonNull(var10001);
+//        RegistryKey<World> registryKey = (RegistryKey)var10000.resultOrPartial(var10001::error).orElseThrow(() -> new IllegalArgumentException("Invalid map dimension: " + String.valueOf(nbt.get("dimension"))));
+//        RegistryKey<World> registryKey =
+//        int i = nbt.getInt("xCenter");
+//        int j = nbt.getInt("zCenter");
+//        byte b = (byte)MathHelper.clamp(nbt.getByte("scale"), 0, 4);
+//        boolean bl = !nbt.contains("trackingPosition", 1) || nbt.getBoolean("trackingPosition");
+//        boolean bl2 = nbt.getBoolean("unlimitedTracking");
+//        boolean bl3 = nbt.getBoolean("locked");
+//        MapState mapState = new MapState(i, j, b, bl, bl2, bl3, registryKey);
+//        byte[] bs = nbt.getByteArray("colors");
+//        if (bs.length == 16384) {
+//            mapState.colors = bs;
+//        }
+//
+//        RegistryOps<NbtElement> registryOps = registryLookup.getOps(NbtOps.INSTANCE);
+//
+//        for(MapBannerMarker mapBannerMarker : (List)MapBannerMarker.LIST_CODEC.parse(registryOps, nbt.get("banners")).resultOrPartial((banner) -> LOGGER.warn("Failed to parse map banner: '{}'", banner)).orElse(List.of())) {
+//            mapState.banners.put(mapBannerMarker.getKey(), mapBannerMarker);
+//            mapState.addDecoration(mapBannerMarker.getDecorationType(), (WorldAccess)null, mapBannerMarker.getKey(), (double)mapBannerMarker.pos().getX(), (double)mapBannerMarker.pos().getZ(), (double)180.0F, (Text)mapBannerMarker.name().orElse((Object)null));
+//        }
+//
+//        NbtList nbtList = nbt.getList("frames", 10);
+//
+//        for(int k = 0; k < nbtList.size(); ++k) {
+//            MapFrameMarker mapFrameMarker = MapFrameMarker.fromNbt(nbtList.getCompound(k));
+//            if (mapFrameMarker != null) {
+//                mapState.frames.put(mapFrameMarker.getKey(), mapFrameMarker);
+//                mapState.addDecoration(MapDecorationTypes.FRAME, (WorldAccess)null, getFrameDecorationKey(mapFrameMarker.getEntityId()), (double)mapFrameMarker.getPos().getX(), (double)mapFrameMarker.getPos().getZ(), (double)mapFrameMarker.getRotation(), (Text)null);
+//            }
+//        }
+//
+//        return mapState;
+//    }
+//
+//    public NbtCompound writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+//        DataResult var10000 = Identifier.CODEC.encodeStart(NbtOps.INSTANCE, this.dimension.getValue());
+//        Logger var10001 = LOGGER;
+//        Objects.requireNonNull(var10001);
+//        var10000.resultOrPartial(var10001::error).ifPresent((nbtElement) -> nbt.put("dimension", nbtElement));
+//        nbt.putInt("xCenter", this.centerX);
+//        nbt.putInt("zCenter", this.centerZ);
+//        nbt.putByte("scale", this.scale);
+//        nbt.putByteArray("colors", this.colors);
+//        nbt.putBoolean("trackingPosition", this.showDecorations);
+//        nbt.putBoolean("unlimitedTracking", this.unlimitedTracking);
+//        nbt.putBoolean("locked", this.locked);
+//        RegistryOps<NbtElement> registryOps = registryLookup.getOps(NbtOps.INSTANCE);
+//        nbt.put("banners", (NbtElement)MapBannerMarker.LIST_CODEC.encodeStart(registryOps, List.copyOf(this.banners.values())).getOrThrow());
+//        NbtList nbtList = new NbtList();
+//
+//        for(MapFrameMarker mapFrameMarker : this.frames.values()) {
+//            nbtList.add(mapFrameMarker.toNbt());
+//        }
+//
+//        nbt.put("frames", nbtList);
+//        return nbt;
+//    }
 }
