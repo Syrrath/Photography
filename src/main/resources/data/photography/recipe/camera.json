@@ -11,16 +11,19 @@
     "S": "minecraft:spyglass"
   },
   "result": {
-    "id": "minecraft:spyglass",
     "count": 1,
+    "id": "minecraft:spyglass",
     "components": {
-      "minecraft:item_name": "{\"text\":\"Camera\"}",
+      "minecraft:item_name": {
+        "translate": "photography:camera",
+        "fallback": "Camera"
+      },
       "minecraft:custom_data": {
-        "isPhotographyCamera":1
+        "isPhotographyCamera": true
       },
       "minecraft:custom_model_data": {
         "strings": [
-          "56774"
+          "isPhotographyCamera"
         ]
       }
     }

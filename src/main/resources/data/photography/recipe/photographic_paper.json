@@ -1,6 +1,6 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
+  "category": "equipment",
   "ingredients": [
     "minecraft:paper",
     "minecraft:cyan_dye",
@@ -11,7 +11,11 @@
     "id": "minecraft:filled_map",
     "count": 1,
     "components": {
-      "minecraft:item_name": "{\"text\":\"Photographic Paper\"}",
+      "minecraft:item_name": {
+        "translate": "photography:empty_map",
+        "fallback": "Photographic Paper",
+        "with": []
+      },
       "minecraft:custom_data": {
         "isPhotographyEmptyMap":true
       },

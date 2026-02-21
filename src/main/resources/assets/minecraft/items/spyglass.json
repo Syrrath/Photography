@@ -4,16 +4,19 @@
     "property": "minecraft:custom_model_data",
     "cases": [
       {
+        "when": "isPhotographyCamera",
+        "model":{
+          "type": "minecraft:model",
+          "model": "photography:item/camera"
+        }
+      },
+      {
         "when": "56774",
         "model":{
             "type": "minecraft:model",
             "model": "photography:item/camera"
-          },
-          "on_false": {
-            "type": "minecraft:model",
-            "model": "minecraft:item/spyglass"
-          }
         }
+      }
     ],
     "fallback": {
       "type": "minecraft:model",

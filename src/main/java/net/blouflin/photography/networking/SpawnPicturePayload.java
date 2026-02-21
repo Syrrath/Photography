@@ -1,8 +1,6 @@
 package net.blouflin.photography.networking;
 
-import net.blouflin.photography.Photography;
 import net.blouflin.photography.PhotographyUtil;
-import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.*;
 import net.minecraft.entity.ItemEntity;
@@ -18,10 +16,8 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.SequencedSet;
 
 
 public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implements CustomPayload {
@@ -35,12 +31,9 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
 
     public static void receive(ServerPlayerEntity player, Integer id, NbtCompound nbtCompound) {
 
-        //TODO Debug
-        //Photography.LOGGER.info("running SpawnPicturePayload.receive");
-        //System.out.println("Printing nbtCompound from the top of SpawnPicturePayload: " + nbtCompound);
 
         MapIdComponent mapId = new MapIdComponent(id);
-        RegistryWrapper.WrapperLookup registryLookup = player.getRegistryManager();
+        //TODO RegistryWrapper.WrapperLookup registryLookup = player.getRegistryManager();
         MapState mapState = PhotographyUtil.fromNbt(nbtCompound); //TODO fromNbt(nbtCompound, registryLookup);
 
         player.getEntityWorld().getServer().execute(() -> {
@@ -51,32 +44,22 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
             stack.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
                 currentNbt.putBoolean("isPhotographyFilledMap",true);
             }));
-            //stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(Collections.singletonList(1F), Collections.singletonList(stack.getComponents().get(DataComponentTypes.CUSTOM_DATA).toString().contains("isPhotographyFilledMap:1b")), Collections.singletonList("56776"), Collections.singletonList(16383998)));
-            stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(List.of(), Collections.singletonList(stack.getComponents().get(DataComponentTypes.CUSTOM_DATA).toString().contains("isPhotographyFilledMap:1b")), List.of("isPhotographyFilledMap"), List.of(56776)));
-            stack.set(DataComponentTypes.ITEM_NAME, Text.literal("Photograph"));
-            //stack.set(DataComponentTypes.TOOLTIP_DISPLAY, new TooltipDisplayComponent(true));
-            // TODO stack.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
-
-            //TODO Debug
-            //System.out.println(stack);
-            player.getInventory().insertStack(stack);
+            stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(List.of(), List.of(), List.of("isPhotographyFilledMap"), List.of()));
+            stack.set(DataComponentTypes.ITEM_NAME, Text.translatableWithFallback("photography:filled_map", "Photograph"));
 
             if(!player.isCreative()) {
                 ItemStack itemStack = new ItemStack(Items.FILLED_MAP);
                 itemStack.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
                     currentNbt.putBoolean("isPhotographyEmptyMap",true);
                 }));
-                //itemStack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(56775));
-                //itemStack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(Collections.singletonList(1F), Collections.singletonList(itemStack.getComponents().get(DataComponentTypes.CUSTOM_DATA).toString().contains("isPhotographyEmptyMap:1b")), Collections.singletonList("56775"), Collections.singletonList(16383998)));
-                itemStack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(List.of(), Collections.singletonList(itemStack.getComponents().get(DataComponentTypes.CUSTOM_DATA).toString().contains("isPhotographyEmptyMap:1b")), List.of("isPhotographyEmptyMap"), List.of(56775)));
-
-                // TODO itemStack.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
-                itemStack.set(DataComponentTypes.ITEM_NAME, Text.literal("Photographic Paper"));
+                itemStack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(List.of(), List.of(), List.of("isPhotographyEmptyMap"), List.of()));
+                itemStack.set(DataComponentTypes.ITEM_NAME, Text.translatableWithFallback("photography:empty_map", "Photographic Paper"));
 
                 int slot = player.getInventory().getSlotWithStack(itemStack);
+                //TODO: System.out.println("slot: " + slot);
                 if(slot != -1) {
                     convertStack(player, slot, stack);
-                } else if (player.getStackInHand(Hand.OFF_HAND).getItem() == itemStack.getItem()) { //required to decrement offhand
+                } else if (player.getStackInHand(Hand.OFF_HAND).getItem() == itemStack.getItem()) { // required to decrement offhand
                     if (Objects.equals(player.getStackInHand(Hand.OFF_HAND).getComponents().get(DataComponentTypes.CUSTOM_DATA), itemStack.getComponents().get(DataComponentTypes.CUSTOM_DATA))) {
                         convertStack(player, 40, stack);
                     }
