@@ -48,6 +48,7 @@ Clone (download) the repository:
 
 Build:
 - open a terminal in the repository folder, then:
+
 On Linux:
 - `chmod +x gradlew`
 - `./gradlew build --no-daemon` (`--no-daemon` means the compilation software will quit after finishing).
