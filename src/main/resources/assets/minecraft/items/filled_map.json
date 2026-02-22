@@ -2,6 +2,20 @@
   "model": {
     "type": "minecraft:select",
     "property": "minecraft:custom_model_data",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/filled_map",
+      "tints": [
+        {
+          "type": "minecraft:constant",
+          "value": -1
+        },
+        {
+          "type": "minecraft:map_color",
+          "default": 4603950
+        }
+      ]
+    },
     "cases": [
       {
         "when": "isPhotographyEmptyMap",
@@ -31,11 +45,7 @@
           "model": "photography:item/filled_photographic_paper"
         }
       }
-    ],
-    "fallback": {
-      "type": "minecraft:model",
-      "model": "minecraft:item/filled_map"
-    }
+    ]
   },
   "properties": {
     "hand_animation_on_swap": true

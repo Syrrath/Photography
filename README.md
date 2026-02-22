@@ -26,7 +26,7 @@ Then use the camera by right-clicking to open the viewfinder. You can use the ri
 
 #
 
-### Why yet another camera mod ?
+### Why yet another camera mod?
 
 This mod has been created to meet very specific needs. It adds a camera to easily take photos from the client renderer to enable the use of shaders while maintaining compatibility with vanilla clients. To clarify **the mod is required on both server and client sides.** Vanilla clients will still be able to join, but will not be able to see or use the added features (which will be displayed as vanilla items), and the items and photos will remain in the world after the mod is removed.
 #
@@ -40,5 +40,19 @@ This mod has been created to meet very specific needs. It adds a camera to easil
 
 </details>
 
+### Building from source:
+
+Clone (download) the repository:
+- either `git clone https://github.com/tesseract-two/Photography.git`.
+- or download zip with the green "<> Code" dropdown button near the top right, then unzip and enter the resulting folder.
+
+Build:
+- open a terminal in the repository folder, then:
+On Linux:
+- `chmod +x gradlew`
+- `./gradlew build --no-daemon` (`--no-daemon` means the compilation software will quit after finishing).
+- find the compiled mod jar file in `build/libs`. Get the one without `-sources` in its name.
+#
+    
 _Photography uses some code from [Image2Map (made by TheEssem and Patbox)](https://modrinth.com/mod/image2map) to render the photos._\
 _Many thanks to its authors!_
