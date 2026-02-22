@@ -11,7 +11,21 @@
         }
       },
       {
+        "when": "56775",
+        "model":{
+          "type": "minecraft:model",
+          "model": "photography:item/empty_photographic_paper"
+        }
+      },
+      {
         "when": "isPhotographyFilledMap",
+        "model":{
+          "type": "minecraft:model",
+          "model": "photography:item/filled_photographic_paper"
+        }
+      },
+      {
+        "when": "56776",
         "model":{
           "type": "minecraft:model",
           "model": "photography:item/filled_photographic_paper"
