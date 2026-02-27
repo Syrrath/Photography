@@ -36,8 +36,6 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
             RegistryWrapper.WrapperLookup registryLookup = client.player.getRegistryManager();
             MapState mapState = PhotographyUtil.fromNbt(nbtCompound);
 
-            PhotographyHud.CAMERA_SCOPE_TO_RENDER = PhotographyHud.CAMERA_SCOPE_CLEAR;
-
             PhotographyHud.setScreenshotFuture(future);
 
             future.thenRun(() -> {

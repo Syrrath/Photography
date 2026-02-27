@@ -51,7 +51,7 @@ public class PhotographyHud {
             if (!isHUDhidden) {
                 renderSpyglassOverlay(context, spyglassScale);
             }
-            spyglassFlashOpacity = MathHelper.lerp(0.1f * f, spyglassFlashOpacity, 0.025f);
+            spyglassFlashOpacity = MathHelper.lerp(0.1f * f, spyglassFlashOpacity, 0.0125f);
 
             if (spyglassScale >= 1.1f && spyglassFlashOpacity <= 0.1f && !isTakingPhoto) {
                 canTakePhoto = true;
