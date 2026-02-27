@@ -28,11 +28,11 @@ public class PhotographyHud {
     public static String handUsingPhotographyCamera = Hand.MAIN_HAND.name();
     public static double zoomAmount;
     public static double defaultMouseSensitivity;
-    public static final Identifier CAMERA_SCOPE = Identifier.of("photography","textures/misc/camera_scope.png");
-    public static final Identifier CAMERA_SCOPE_CLEAR = Identifier.of("photography","textures/misc/camera_scope_clear.png");
-    public static final Identifier CAMERA_SCOPE_FLASH = Identifier.of("photography","textures/misc/camera_scope_flash.png");
+    public static final Identifier CAMERA_SCOPE = Identifier.of("photography","camera_scope"); // requires path of textures/gui/sprites/
+    public static final Identifier CAMERA_SCOPE_CLEAR = Identifier.of("photography","camera_scope_clear");
+    public static final Identifier CAMERA_SCOPE_FLASH = Identifier.of("photography","camera_scope_flash");
     public static Identifier CAMERA_SCOPE_TO_RENDER = CAMERA_SCOPE;
-    public static final MinecraftClient client = MinecraftClient.getInstance();
+    private static final MinecraftClient client = MinecraftClient.getInstance();
     private static final KeyBinding escapeKeybinding = new KeyBinding("key.keyboard.escape", GLFW.GLFW_KEY_ESCAPE, KeyBinding.Category.MISC);
 
     private static CompletableFuture<Void> screenshotFuture;
@@ -42,7 +42,6 @@ public class PhotographyHud {
 
     public static void renderPhotographyCameraOverlay(DrawContext context) {
 
-        //float f = client.getRenderTickCounter().getLastFrameDuration();
         float f = client.getRenderTickCounter().getDynamicDeltaTicks();
         spyglassScale = MathHelper.lerp(0.5f * f, spyglassScale, 1.125f);
 
@@ -112,33 +111,13 @@ public class PhotographyHud {
         int m = k + i;
         int n = l + j;
 
-//        RenderSystem.enableBlend();
-//        RenderSystem.defaultBlendFunc();
-//        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-        //context.drawTexture(RenderPipeline.builder().build(), CAMERA_SCOPE_FLASH, k, l, 0.0f, 0.0f, i, j, i, j);
-        //context.drawTexture(RenderPipeline.builder().build(), CAMERA_SCOPE_FLASH, k, l, 0.0f, 0.0f, i, j, i, j);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, CAMERA_SCOPE_FLASH, k, l, i, j, spyglassFlashOpacity);
 
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, CAMERA_SCOPE_TO_RENDER, k, l, i, j);
 
-        //RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, spyglassFlashOpacity);
-        //context.drawTexture(RenderLayer::getGuiTexturedOverlay, CAMERA_SCOPE_TO_RENDER, k, l, 0.0f, 0.0f, i, j, i, j);
-        //context.drawTexture(RenderPipeline.builder().build(), CAMERA_SCOPE_TO_RENDER, k, l, 0.0f, 0.0f, i, j, i, j);
-
-        //RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-        //RenderSystem.disableBlend();
-
-        //context.fill(RenderLayer.getGuiOverlay(), , Colors.BLACK)
         context.fill(RenderPipelines.GUI, 0, n, context.getScaledWindowWidth(), context.getScaledWindowHeight(), Colors.BLACK);
         context.fill(RenderPipelines.GUI, 0, 0, context.getScaledWindowWidth(), l, Colors.BLACK);
         context.fill(RenderPipelines.GUI, 0, l, k, n, Colors.BLACK);
         context.fill(RenderPipelines.GUI, m, l, context.getScaledWindowWidth(), n, Colors.BLACK);
-        if(isTakingPhoto) {
-            context.drawTexture(RenderPipelines.GUI_TEXTURED, CAMERA_SCOPE_FLASH, k, l, 0.0f, 0.0f, i, j, i, j);
-        }
-
-
-        context.drawTexture(RenderPipelines.GUI_TEXTURED, CAMERA_SCOPE_TO_RENDER, k, l, 0.0f, 0.0f, i, j, i, j);
-
-
     }
 }

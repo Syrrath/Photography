@@ -43,16 +43,20 @@ This mod has been created to meet very specific needs. It adds a camera to easil
 ### Building from source:
 
 Clone (download) the repository:
-- either `git clone https://github.com/tesseract-two/Photography.git`.
+- either `git clone https://github.com/tesseract-two/Photography.git`, then `cd Photography`,
 - or download zip with the green "<> Code" dropdown button near the top right, then unzip and enter the resulting folder.
 
 Build:
 - open a terminal in the repository folder, then:
 
+On Windows:
+- `.\gradlew build --no-daemon` (`--no-daemon` means the compilation software will quit after finishing).
+
 On Linux:
 - `chmod +x gradlew`
 - `./gradlew build --no-daemon` (`--no-daemon` means the compilation software will quit after finishing).
-- find the compiled mod jar file in `build/libs`. Get the one without `-sources` in its name.
+
+Then find the compiled mod jar file in `build/libs`. Get the one without `-sources` in the file name.
 #
     
 _Photography uses some code from [Image2Map (made by TheEssem and Patbox)](https://modrinth.com/mod/image2map) to render the photos._\

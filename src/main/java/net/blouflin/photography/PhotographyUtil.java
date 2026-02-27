@@ -74,9 +74,14 @@ public class PhotographyUtil {
         int j = nbt.getInt("zCenter", 0);
         byte b = (byte) MathHelper.clamp(nbt.getByte("scale", (byte) 3), 0, 4);
 //        boolean bl = !nbt.contains("trackingPosition", 1) || nbt.getBoolean("trackingPosition", false);
+        boolean bl = nbt.getBoolean("showDecorations", false);
         boolean bl2 = nbt.getBoolean("unlimitedTracking", false);
         boolean bl3 = nbt.getBoolean("locked", true);
-        MapState mapState = MapState.of(i, j, b, bl2, bl3, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("photography", "generated")));
+
+        //MapState mapState = new MapState(i, j, b, bl, bl2, bl3, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("minecraft", "overworld")));
+
+        MapState mapState = MapState.of(b, bl3, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("minecraft", "overworld")));
+
         byte[] dummyByte = new byte[0];
         byte[] bs = nbt.getByteArray("colors").orElse(dummyByte);
         if (bs.length == 16384) {

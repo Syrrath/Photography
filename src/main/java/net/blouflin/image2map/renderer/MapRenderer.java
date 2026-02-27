@@ -1,6 +1,7 @@
 package net.blouflin.image2map.renderer;
 
 import net.blouflin.image2map.Image2Map;
+import net.blouflin.photography.PhotographyUtil;
 import net.minecraft.block.MapColor;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.MapIdComponent;
@@ -9,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.map.MapState;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
@@ -52,7 +54,18 @@ public class MapRenderer {
         // 1.17, so we create and apply our own MapState instead
         ItemStack stack = new ItemStack(Items.FILLED_MAP);
         MapIdComponent id = world.increaseAndGetMapId();
-        MapState state = MapState.of(x, z, (byte) 3, false, false, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("image2map", "generated")));
+        NbtCompound nbt = new NbtCompound();
+        RegistryWrapper.WrapperLookup registryLookup = player.getRegistryManager();
+        nbt.putString("dimension", player.getEntityWorld().getRegistryKey().getValue().toString());
+        nbt.putInt("xCenter", (int) player.getX());
+        nbt.putInt("zCenter", (int) player.getZ());
+        nbt.putBoolean("locked", true);
+        nbt.putBoolean("unlimitedTracking", false);
+        nbt.putBoolean("showDecorations", false);
+        nbt.putByte("scale", (byte) 3);
+        nbt.put("banners", new NbtList());
+        nbt.put("frames", new NbtList());
+        MapState state = PhotographyUtil.fromNbt(nbt);
 
         world.putMapState(id, state);
         stack.set(DataComponentTypes.MAP_ID, id);

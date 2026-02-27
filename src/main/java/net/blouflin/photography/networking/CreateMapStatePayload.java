@@ -33,7 +33,7 @@ public record CreateMapStatePayload() implements CustomPayload {
             nbt.putInt("zCenter", (int) player.getZ());
             nbt.putBoolean("locked", true);
             nbt.putBoolean("unlimitedTracking", false);
-            nbt.putBoolean("trackingPosition", false);
+            nbt.putBoolean("showDecorations", false);
             nbt.putByte("scale", (byte) 3);
             nbt.put("banners", new NbtList());
             nbt.put("frames", new NbtList());
