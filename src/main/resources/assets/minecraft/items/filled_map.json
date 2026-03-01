@@ -1,45 +1,59 @@
 {
   "model": {
+
     "type": "minecraft:select",
     "property": "minecraft:custom_model_data",
     "fallback": {
-      "type": "minecraft:model",
-      "model": "minecraft:item/filled_map",
-      "tints": [
+      "type": "minecraft:range_dispatch",
+      "property": "minecraft:custom_model_data",
+      "index": 0,
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "minecraft:item/filled_map",
+        "tints": [
+          {
+            "type": "minecraft:constant",
+            "value": -1
+          },
+          {
+            "type": "minecraft:map_color",
+            "default": 4603950
+          }
+        ]
+      },
+      "entries": [
         {
-          "type": "minecraft:constant",
-          "value": -1
+          "threshold": 56775,
+          "model":{
+            "type": "minecraft:model",
+            "model": "photography:item/empty_photographic_paper"
+          }
         },
         {
-          "type": "minecraft:map_color",
-          "default": 4603950
+          "threshold": 56776,
+          "model":{
+            "type": "minecraft:model",
+            "model": "photography:item/filled_photographic_paper"
+          }
         }
       ]
     },
     "cases": [
       {
-        "when": "isPhotographyEmptyMap",
+        "when": [
+          "isPhotographyEmptyMap",
+          "56775"
+        ],
         "model":{
           "type": "minecraft:model",
           "model": "photography:item/empty_photographic_paper"
         }
       },
       {
-        "when": "56775",
-        "model":{
-          "type": "minecraft:model",
-          "model": "photography:item/empty_photographic_paper"
-        }
-      },
-      {
-        "when": "isPhotographyFilledMap",
-        "model":{
-          "type": "minecraft:model",
-          "model": "photography:item/filled_photographic_paper"
-        }
-      },
-      {
-        "when": "56776",
+        "when": [
+          "isPhotographyFilledMap",
+          "56776"
+        ],
         "model":{
           "type": "minecraft:model",
           "model": "photography:item/filled_photographic_paper"

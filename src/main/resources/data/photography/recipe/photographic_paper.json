@@ -22,6 +22,9 @@
       "minecraft:custom_model_data": {
         "strings": [
           "isPhotographyEmptyMap"
+        ],
+        "floats": [
+          56775
         ]
       }
     }
