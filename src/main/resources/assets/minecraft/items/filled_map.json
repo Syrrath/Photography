@@ -1,12 +1,28 @@
 {
   "model": {
 
-    "type": "minecraft:select",
+    "type": "minecraft:range_dispatch",
     "property": "minecraft:custom_model_data",
+    "index": 0,
+    "entries": [
+      {
+        "threshold": 56775,
+        "model":{
+          "type": "minecraft:model",
+          "model": "photography:item/empty_photographic_paper"
+        }
+      },
+      {
+        "threshold": 56776,
+        "model":{
+          "type": "minecraft:model",
+          "model": "photography:item/filled_photographic_paper"
+        }
+      }
+    ],
     "fallback": {
-      "type": "minecraft:range_dispatch",
+      "type": "minecraft:select",
       "property": "minecraft:custom_model_data",
-      "index": 0,
       "fallback": {
         "type": "minecraft:model",
         "model": "minecraft:item/filled_map",
@@ -21,45 +37,29 @@
           }
         ]
       },
-      "entries": [
+      "cases": [
         {
-          "threshold": 56775,
+          "when": [
+            "isPhotographyEmptyMap",
+            "56775"
+          ],
           "model":{
             "type": "minecraft:model",
             "model": "photography:item/empty_photographic_paper"
           }
         },
         {
-          "threshold": 56776,
+          "when": [
+            "isPhotographyFilledMap",
+            "56776"
+          ],
           "model":{
             "type": "minecraft:model",
             "model": "photography:item/filled_photographic_paper"
           }
         }
       ]
-    },
-    "cases": [
-      {
-        "when": [
-          "isPhotographyEmptyMap",
-          "56775"
-        ],
-        "model":{
-          "type": "minecraft:model",
-          "model": "photography:item/empty_photographic_paper"
-        }
-      },
-      {
-        "when": [
-          "isPhotographyFilledMap",
-          "56776"
-        ],
-        "model":{
-          "type": "minecraft:model",
-          "model": "photography:item/filled_photographic_paper"
-        }
-      }
-    ]
+    }
   },
   "properties": {
     "hand_animation_on_swap": true

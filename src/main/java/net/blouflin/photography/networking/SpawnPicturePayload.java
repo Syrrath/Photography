@@ -42,7 +42,7 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
             stack.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
                 currentNbt.putBoolean("isPhotographyFilledMap",true);
             }));
-            stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(List.of(), List.of(), List.of("isPhotographyFilledMap"), List.of()));
+            stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(List.of(56776F), List.of(), List.of(), List.of()));
             stack.set(DataComponentTypes.ITEM_NAME, Text.translatableWithFallback("photography:filled_map", "Photograph"));
 
             if(!player.isCreative()) {
@@ -50,7 +50,7 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
                 itemStack.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
                     currentNbt.putBoolean("isPhotographyEmptyMap",true);
                 }));
-                itemStack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(List.of(), List.of(), List.of("isPhotographyEmptyMap"), List.of()));
+                itemStack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(List.of(56775F), List.of(), List.of(), List.of()));
                 itemStack.set(DataComponentTypes.ITEM_NAME, Text.translatableWithFallback("photography:empty_map", "Photographic Paper"));
 
                 int slot = player.getInventory().getSlotWithStack(itemStack);

@@ -22,9 +22,6 @@
         "isPhotographyCamera": true
       },
       "minecraft:custom_model_data": {
-        "strings": [
-          "isPhotographyCamera"
-        ],
         "floats": [
           56774
         ]
