@@ -91,9 +91,21 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
         // TODO Debug
         //System.out.println("Height: "+height+" Width: "+width);
 
-        // Coordinates of the image's middle
-        int xc = (width - targetWidth) / 2;
-        int yc = (height - targetHeight) / 2;
+        int xc = 0, yc = 0;
+
+        // Coordinates of the image's top-left corner
+        if (targetHeight > width) {
+            targetWidth = width;
+
+            xc = (targetWidth - width) / 2;
+            yc = (height - width) / 2;
+
+            targetHeight = width;
+
+        } else {
+            xc = (width - targetWidth) / 2;
+            yc = (height - targetHeight) / 2;
+        }
         // TODO Debug
         //System.out.println("xc: "+xc+" yc: "+yc);
 

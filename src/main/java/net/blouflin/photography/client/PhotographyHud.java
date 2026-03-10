@@ -3,6 +3,8 @@ package net.blouflin.photography.client;
 import net.blouflin.photography.networking.SetUsingPhotographyCameraPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.Font;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.option.KeyBinding;
@@ -119,5 +121,8 @@ public class PhotographyHud {
         context.fill(RenderPipelines.GUI, 0, 0, context.getScaledWindowWidth(), l, Colors.BLACK);
         context.fill(RenderPipelines.GUI, 0, l, k, n, Colors.BLACK);
         context.fill(RenderPipelines.GUI, m, l, context.getScaledWindowWidth(), n, Colors.BLACK);
+
+        //context.drawText(MinecraftClient.getInstance().textRenderer, "Hello, world!", k, l, 0xFFFFFFFF, false);
+
     }
 }
