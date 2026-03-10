@@ -44,8 +44,8 @@ public record CreateMapStatePayload() implements CustomPayload {
             nbtCompound = PhotographyUtil.writeNbt(nbtCompound, state);
 
             for (ServerPlayerEntity otherPlayer : player.getEntityWorld().getServer().getPlayerManager().getPlayerList()) {
-                PlayCameraShutterSoundPayload payload = new PlayCameraShutterSoundPayload(GlobalPos.create(player.getEntityWorld().getRegistryKey(), player.getBlockPos()));
-                ServerPlayNetworking.send(otherPlayer, payload);
+                PlayCameraShutterSoundPayload payload = new PlayCameraShutterSoundPayload(GlobalPos.create(player.getEntityWorld().getRegistryKey(),player.getBlockPos()));
+                ServerPlayNetworking.send(otherPlayer,payload);
             }
 
             CreatePicturePayload payload = new CreatePicturePayload(id, nbtCompound);

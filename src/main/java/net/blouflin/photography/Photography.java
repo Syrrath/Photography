@@ -67,7 +67,16 @@ public class Photography implements ModInitializer {
 		entries.addBefore(Items.WRITABLE_BOOK, photographicPaper);
 	}
 
-//    private void countMaps(MapIdComponent id) {
+//    private void countMaps(MapIdComponent id) throws IOException {
 //        // create a list of maps made using the mod with an associated timestamp
-//    }
+//		try {
+//			Files.createFile(FabricLoader.getInstance().getConfigDir());
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//
+//		String mapCount = id.asString() + ;
+//
+//		Files.writeString(, id);
+//	}
 }
