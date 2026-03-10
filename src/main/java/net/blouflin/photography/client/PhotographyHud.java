@@ -3,8 +3,6 @@ package net.blouflin.photography.client;
 import net.blouflin.photography.networking.SetUsingPhotographyCameraPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.Font;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.option.KeyBinding;
@@ -113,9 +111,9 @@ public class PhotographyHud {
         int m = k + i;
         int n = l + j;
 
-        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, CAMERA_SCOPE_FLASH, k, l, i, j, spyglassFlashOpacity);
-
         context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, CAMERA_SCOPE_TO_RENDER, k, l, i, j);
+
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, CAMERA_SCOPE_FLASH, k, l, i, j, spyglassFlashOpacity);
 
         context.fill(RenderPipelines.GUI, 0, n, context.getScaledWindowWidth(), context.getScaledWindowHeight(), Colors.BLACK);
         context.fill(RenderPipelines.GUI, 0, 0, context.getScaledWindowWidth(), l, Colors.BLACK);

@@ -2,7 +2,9 @@ package net.blouflin.photography.networking;
 
 import net.blouflin.photography.PhotographyUtil;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.*;
+import net.minecraft.component.type.CustomModelDataComponent;
+import net.minecraft.component.type.MapIdComponent;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -11,14 +13,12 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 
 import java.util.List;
 import java.util.Objects;
-
 
 public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implements CustomPayload {
     public static final CustomPayload.Id<SpawnPicturePayload> ID = CustomPayload.id("photography_spawn_picture");
@@ -31,10 +31,8 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
 
     public static void receive(ServerPlayerEntity player, Integer id, NbtCompound nbtCompound) {
 
-
         MapIdComponent mapId = new MapIdComponent(id);
-        //TODO RegistryWrapper.WrapperLookup registryLookup = player.getRegistryManager();
-        MapState mapState = PhotographyUtil.fromNbt(nbtCompound); //TODO fromNbt(nbtCompound, registryLookup);
+        MapState mapState = PhotographyUtil.fromNbt(nbtCompound);
 
         player.getEntityWorld().getServer().execute(() -> {
 
@@ -56,7 +54,6 @@ public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implement
                 itemStack.set(DataComponentTypes.ITEM_NAME, Text.translatableWithFallback("photography:empty_map", "Photographic Paper"));
 
                 int slot = player.getInventory().getSlotWithStack(itemStack);
-                //TODO: System.out.println("slot: " + slot);
                 if(slot != -1) {
                     convertStack(player, slot, stack);
                 } else if (player.getStackInHand(Hand.OFF_HAND).getItem() == itemStack.getItem()) { // required to decrement offhand

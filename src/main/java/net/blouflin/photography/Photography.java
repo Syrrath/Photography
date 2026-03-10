@@ -8,7 +8,6 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.CustomModelDataComponent;
-import net.minecraft.component.type.MapIdComponent;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.*;
 import net.minecraft.sound.SoundEvent;
@@ -27,7 +26,7 @@ public class Photography implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		LOGGER.info("Photography mod (by BlouFlin) loaded !");
+		//LOGGER.info("Photography mod (by BlouFlin) loaded !");
 
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(this::addItemsToCreativeTab);
 

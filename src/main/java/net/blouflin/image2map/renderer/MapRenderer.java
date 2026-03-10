@@ -88,49 +88,7 @@ public class MapRenderer {
                     state.colors[i + j * width] = (byte) nearestColor(mapColors, imageColor);
             }
         }
-
         return stack;
-
-
-//        ItemStack stack = new ItemStack(Items.FILLED_MAP);
-//        //int id = world.getNextMapId().id();
-//        MapIdComponent id = world.increaseAndGetMapId();
-//        NbtCompound nbt = new NbtCompound();
-//        //RegistryWrapper.WrapperLookup registryLookup = RegistryKey.of(RegistryKeys.WORLD, Identifier.of("photography", "generated"))
-//
-//        nbt.putString("dimension", world.getRegistryKey().getValue().toString());
-//        nbt.putInt("xCenter", (int) x);
-//        nbt.putInt("zCenter", (int) z);
-//        nbt.putBoolean("locked", true);
-//        nbt.putBoolean("unlimitedTracking", false);
-//        nbt.putBoolean("trackingPosition", false);
-//        nbt.putByte("scale", (byte) 3);
-//        // TODO
-//        MapState state = MapState.of(0, 0, (byte) 0, false, false, RegistryKey.of(RegistryKeys.WORLD, Identifier.of("photography", "generated")));
-//        //world.putMapState(FilledMapItem.getMapName(id), state);
-//        world.putMapState(id, state);
-//        //stack.getOrCreateNbt().putInt("map", id);
-//        stack.set(DataComponentTypes.MAP_ID, id);
-//
-//        Image resizedImage = image.getScaledInstance(128, 128, Image.SCALE_DEFAULT);
-//        BufferedImage resized = convertToBufferedImage(resizedImage);
-//        int width = resized.getWidth();
-//        int height = resized.getHeight();
-//        int[][] pixels = convertPixelArray(resized);
-//        MapColor[] mapColors = getColors();
-//        Color imageColor;
-//        mapColors = Arrays.stream(mapColors).filter(Objects::nonNull).toArray(MapColor[]::new);
-//
-//        for (int i = 0; i < width; i++) {
-//            for (int j = 0; j < height; j++) {
-//                imageColor = new Color(pixels[j][i], true);
-//                if (mode.equals(Image2Map.DitherMode.FLOYD))
-//                    state.colors[i + j * width] = (byte) floydDither(mapColors, pixels, i, j, imageColor);
-//                else
-//                    state.colors[i + j * width] = (byte) nearestColor(mapColors, imageColor);
-//            }
-//        }
-//        return stack;
     }
 
     public static MapState render(BufferedImage image, Image2Map.DitherMode mode, int id, MapState state) {

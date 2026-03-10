@@ -21,8 +21,6 @@ public record GetUsingPhotographyCameraPayload(UUID player, Boolean isUsingPhoto
         client.execute(() -> {
 
             ((PlayerIsUsingCamera) client.world.getPlayerByUuid(player)).setUsingPhotographyCamera(isUsingPhotographyCamera,handUsingPhotographyCamera);
-            //TODO DEBUG
-            //System.out.println(isUsingPhotographyCamera + " ... " + handUsingPhotographyCamera);
         });
     }
 }

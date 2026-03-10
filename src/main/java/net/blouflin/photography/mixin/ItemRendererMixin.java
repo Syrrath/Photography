@@ -66,7 +66,6 @@ public abstract class ItemRendererMixin {
         }
         if (stack.isOf(Items.SPYGLASS) && stack.getComponents().contains(DataComponentTypes.CUSTOM_DATA)) {
             if (stack.getComponents().get(DataComponentTypes.CUSTOM_DATA).toString().contains("isPhotographyCamera:1b")) {
-
                 model = this.models.getModelManager().getModel(Identifier.of("photography","item/camera"));
             }
         }
