@@ -20,15 +20,22 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.*;
 
 import java.util.Objects;
+
+import static net.blouflin.photography.Photography.CAMERA_SHUTTER;
+import static net.blouflin.photography.Photography.CAMERA_SHUTTER_SOUND;
 
 @Environment(EnvType.CLIENT)
 public class PhotographyClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+
+        Registry.register(Registries.SOUND_EVENT, CAMERA_SHUTTER_SOUND, CAMERA_SHUTTER);
 
         //ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(Identifier.of("photography","item/camera")));
 
@@ -72,17 +79,14 @@ public class PhotographyClient implements ClientModInitializer {
         UseItemCallback.EVENT.register((player, world, hand) -> {
             if (((PlayerIsUsingCamera) player).isUsingPhotographyCamera()) {
                 player.getStackInHand(Hand.valueOf(PhotographyHud.handUsingPhotographyCamera)).use(world, player, Hand.valueOf(PhotographyHud.handUsingPhotographyCamera));
-                //return TypedActionResult.fail(ItemStack.EMPTY);
                 return ActionResult.FAIL;
             } else if (player.getStackInHand(Hand.MAIN_HAND).getItem() == photographyCameraStack.getItem()) {
                 if (Objects.equals(player.getStackInHand(Hand.MAIN_HAND).getComponents().get(DataComponentTypes.CUSTOM_DATA), photographyCameraStack.getComponents().get(DataComponentTypes.CUSTOM_DATA))) {
                     player.getStackInHand(Hand.MAIN_HAND).use(world, player, Hand.MAIN_HAND);
                     return ActionResult.FAIL;
-                            //TypedActionResult.fail(ItemStack.EMPTY);
                 }
             }
             return ActionResult.PASS;
-            //TypedActionResult.pass(ItemStack.EMPTY);
         });
     }
 
