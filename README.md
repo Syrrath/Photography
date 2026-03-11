@@ -50,9 +50,9 @@ Build:
 - open a terminal in the repository folder, then:
 
 On Windows:
-- `.\gradlew build --no-daemon` (`--no-daemon` means the compilation software will quit after finishing).
+- `./gradlew.bat build --no-daemon` (`--no-daemon` means the compilation software will quit after finishing).
 
-On Linux:
+On Linux or MacOS:
 - `chmod +x gradlew`
 - `./gradlew build --no-daemon` (`--no-daemon` means the compilation software will quit after finishing).
 

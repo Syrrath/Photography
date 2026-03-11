@@ -19,7 +19,7 @@ public class PhotographyUtil {
 
     public static MapState fromNbt(NbtCompound nbt) {
 
-        // unused map data; the MapState.of method used below accept these
+        // unused map data; the MapState.of method used below doesn't accept these
 //        int i = nbt.getInt("xCenter", 0);
 //        int j = nbt.getInt("zCenter", 0);
 //        boolean bl = nbt.getBoolean("showDecorations", false);
