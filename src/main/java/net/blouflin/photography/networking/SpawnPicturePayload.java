@@ -1,86 +1,85 @@
 package net.blouflin.photography.networking;
 
 import net.blouflin.photography.PhotographyUtil;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.CustomModelDataComponent;
-import net.minecraft.component.type.MapIdComponent;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.map.MapState;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
-
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.CustomModelData;
+import net.minecraft.world.level.saveddata.maps.MapId;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import java.util.List;
 import java.util.Objects;
 
-public record SpawnPicturePayload(Integer id, NbtCompound nbtCompound) implements CustomPayload {
-    public static final CustomPayload.Id<SpawnPicturePayload> ID = CustomPayload.id("photography_spawn_picture");
-    public static final PacketCodec<PacketByteBuf, SpawnPicturePayload> CODEC = PacketCodec.of((value, buf) -> buf.writeInt(value.id).writeNbt(value.nbtCompound), buf -> new SpawnPicturePayload(buf.readInt(),buf.readNbt()));
+public record SpawnPicturePayload(Integer id, CompoundTag nbtCompound) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<SpawnPicturePayload> ID = CustomPacketPayload.createType("photography_spawn_picture");
+    public static final StreamCodec<FriendlyByteBuf, SpawnPicturePayload> CODEC = StreamCodec.ofMember((value, buf) -> buf.writeInt(value.id).writeNbt(value.nbtCompound), buf -> new SpawnPicturePayload(buf.readInt(),buf.readNbt()));
 
     @Override
-    public Id<? extends CustomPayload> getId() {
+    public Type<? extends CustomPacketPayload> type() {
         return ID;
     }
 
-    public static void receive(ServerPlayerEntity player, Integer id, NbtCompound nbtCompound) {
+    public static void receive(ServerPlayer player, Integer id, CompoundTag nbtCompound) {
 
-        MapIdComponent mapId = new MapIdComponent(id);
-        MapState mapState = PhotographyUtil.fromNbt(nbtCompound);
+        MapId mapId = new MapId(id);
+        MapItemSavedData mapState = PhotographyUtil.fromNbt(nbtCompound);
 
-        player.getEntityWorld().getServer().execute(() -> {
+        player.level().getServer().execute(() -> {
 
             ItemStack stack = new ItemStack(Items.FILLED_MAP);
-            player.getEntityWorld().putMapState(mapId, mapState);
-            stack.set(DataComponentTypes.MAP_ID, mapId);
-            stack.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
+            player.level().setMapData(mapId, mapState);
+            stack.set(DataComponents.MAP_ID, mapId);
+            stack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, comp -> comp.update(currentNbt -> {
                 currentNbt.putBoolean("isPhotographyFilledMap",true);
             }));
-            stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(List.of(56776F), List.of(), List.of(), List.of()));
-            stack.set(DataComponentTypes.ITEM_NAME, Text.translatableWithFallback("photography:filled_map", "Photograph"));
+            stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(56776F), List.of(), List.of(), List.of()));
+            stack.set(DataComponents.ITEM_NAME, Component.translatableWithFallback("photography:filled_map", "Photograph"));
 
             if(!player.isCreative()) {
                 ItemStack itemStack = new ItemStack(Items.FILLED_MAP);
-                itemStack.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
+                itemStack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, comp -> comp.update(currentNbt -> {
                     currentNbt.putBoolean("isPhotographyEmptyMap",true);
                 }));
-                itemStack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(List.of(56775F), List.of(), List.of(), List.of()));
-                itemStack.set(DataComponentTypes.ITEM_NAME, Text.translatableWithFallback("photography:empty_map", "Photographic Paper"));
+                itemStack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(56775F), List.of(), List.of(), List.of()));
+                itemStack.set(DataComponents.ITEM_NAME, Component.translatableWithFallback("photography:empty_map", "Photographic Paper"));
 
-                int slot = player.getInventory().getSlotWithStack(itemStack);
+                int slot = player.getInventory().findSlotMatchingItem(itemStack);
                 if(slot != -1) {
                     convertStack(player, slot, stack);
-                } else if (player.getStackInHand(Hand.OFF_HAND).getItem() == itemStack.getItem()) { // required to decrement offhand
-                    if (Objects.equals(player.getStackInHand(Hand.OFF_HAND).getComponents().get(DataComponentTypes.CUSTOM_DATA), itemStack.getComponents().get(DataComponentTypes.CUSTOM_DATA))) {
+                } else if (player.getItemInHand(InteractionHand.OFF_HAND).getItem() == itemStack.getItem()) { // required to decrement offhand
+                    if (Objects.equals(player.getItemInHand(InteractionHand.OFF_HAND).getComponents().get(DataComponents.CUSTOM_DATA), itemStack.getComponents().get(DataComponents.CUSTOM_DATA))) {
                         convertStack(player, 40, stack);
                     }
                 }
             }
             else {
-                if (player.getInventory().insertStack(stack)) {
-                    player.getInventory().insertStack(stack);
+                if (player.getInventory().add(stack)) {
+                    player.getInventory().add(stack);
                 } else {
-                    ItemEntity itemEntity = new ItemEntity(player.getEntityWorld(), player.getEntityPos().x, player.getEntityPos().y, player.getEntityPos().z, stack);
-                    player.getEntityWorld().spawnEntity(itemEntity);
+                    ItemEntity itemEntity = new ItemEntity(player.level(), player.position().x, player.position().y, player.position().z, stack);
+                    player.level().addFreshEntity(itemEntity);
                 }
             }
         });
     }
 
-    private static void convertStack(ServerPlayerEntity player, int slot, ItemStack stack) {
-        player.getInventory().getStack(slot).decrement(1);
+    private static void convertStack(ServerPlayer player, int slot, ItemStack stack) {
+        player.getInventory().getItem(slot).shrink(1);
 
-        if (player.getInventory().insertStack(stack)) {
-            player.getInventory().insertStack(stack);
+        if (player.getInventory().add(stack)) {
+            player.getInventory().add(stack);
         } else {
-            ItemEntity itemEntity = new ItemEntity(player.getEntityWorld(), player.getEntityPos().x, player.getEntityPos().y, player.getEntityPos().z, stack);
-            player.getEntityWorld().spawnEntity(itemEntity);
+            ItemEntity itemEntity = new ItemEntity(player.level(), player.position().x, player.position().y, player.position().z, stack);
+            player.level().addFreshEntity(itemEntity);
         }
     }
 }

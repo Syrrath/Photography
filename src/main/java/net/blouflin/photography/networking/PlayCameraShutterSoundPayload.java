@@ -1,25 +1,25 @@
 package net.blouflin.photography.networking;
 
 import net.blouflin.photography.Photography;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.math.GlobalPos;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.sounds.SoundSource;
 
-public record PlayCameraShutterSoundPayload(GlobalPos globalPos) implements CustomPayload {
-    public static final CustomPayload.Id<PlayCameraShutterSoundPayload> ID = CustomPayload.id("photography_play_camera_shutter_sound");
-    public static final PacketCodec<PacketByteBuf, PlayCameraShutterSoundPayload> CODEC = PacketCodec.of((value, buf) -> buf.writeGlobalPos(value.globalPos), buf -> new PlayCameraShutterSoundPayload(buf.readGlobalPos()));
+public record PlayCameraShutterSoundPayload(GlobalPos globalPos) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<PlayCameraShutterSoundPayload> ID = CustomPacketPayload.createType("photography_play_camera_shutter_sound");
+    public static final StreamCodec<FriendlyByteBuf, PlayCameraShutterSoundPayload> CODEC = StreamCodec.ofMember((value, buf) -> buf.writeGlobalPos(value.globalPos), buf -> new PlayCameraShutterSoundPayload(buf.readGlobalPos()));
 
     @Override
-    public Id<? extends CustomPayload> getId() {
+    public Type<? extends CustomPacketPayload> type() {
         return ID;
     }
 
-    public static void receive(MinecraftClient client, GlobalPos globalPos) {
+    public static void receive(Minecraft client, GlobalPos globalPos) {
         client.execute(() -> {
-            client.world.playSoundClient(globalPos.pos().getX(),globalPos.pos().getY(),globalPos.pos().getZ(),Photography.CAMERA_SHUTTER,SoundCategory.PLAYERS,0.7f,1.0f,true);
+            client.level.playLocalSound(globalPos.pos().getX(),globalPos.pos().getY(),globalPos.pos().getZ(),Photography.CAMERA_SHUTTER,SoundSource.PLAYERS,0.7f,1.0f,true);
         });
     }
 }

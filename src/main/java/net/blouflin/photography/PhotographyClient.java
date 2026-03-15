@@ -14,16 +14,17 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.*;
-
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
 import java.util.Objects;
 
 import static net.blouflin.photography.Photography.CAMERA_SHUTTER;
@@ -35,7 +36,7 @@ public class PhotographyClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
-        Registry.register(Registries.SOUND_EVENT, CAMERA_SHUTTER_SOUND, CAMERA_SHUTTER);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, CAMERA_SHUTTER_SOUND, CAMERA_SHUTTER);
 
         //ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(Identifier.of("photography","item/camera")));
 
@@ -46,51 +47,51 @@ public class PhotographyClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register(this::onHudRender);
 
         ItemStack photographyCameraStack = new ItemStack(Items.SPYGLASS);
-        photographyCameraStack.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
+        photographyCameraStack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, comp -> comp.update(currentNbt -> {
             currentNbt.putBoolean("isPhotographyCamera",true);
         }));
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             if (((PlayerIsUsingCamera) player).isUsingPhotographyCamera()) {
-                player.getStackInHand(Hand.valueOf(PhotographyHud.handUsingPhotographyCamera)).use(world, player, Hand.valueOf(PhotographyHud.handUsingPhotographyCamera));
-                return ActionResult.FAIL;
-            } else if (player.getStackInHand(Hand.MAIN_HAND).getItem() == photographyCameraStack.getItem()) {
-                if (Objects.equals(player.getStackInHand(Hand.MAIN_HAND).getComponents().get(DataComponentTypes.CUSTOM_DATA), photographyCameraStack.getComponents().get(DataComponentTypes.CUSTOM_DATA))) {
-                    player.getStackInHand(Hand.MAIN_HAND).use(world, player, Hand.MAIN_HAND);
-                    return ActionResult.FAIL;
+                player.getItemInHand(InteractionHand.valueOf(PhotographyHud.handUsingPhotographyCamera)).use(world, player, InteractionHand.valueOf(PhotographyHud.handUsingPhotographyCamera));
+                return InteractionResult.FAIL;
+            } else if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == photographyCameraStack.getItem()) {
+                if (Objects.equals(player.getItemInHand(InteractionHand.MAIN_HAND).getComponents().get(DataComponents.CUSTOM_DATA), photographyCameraStack.getComponents().get(DataComponents.CUSTOM_DATA))) {
+                    player.getItemInHand(InteractionHand.MAIN_HAND).use(world, player, InteractionHand.MAIN_HAND);
+                    return InteractionResult.FAIL;
                 }
             }
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             if (((PlayerIsUsingCamera) player).isUsingPhotographyCamera()) {
-                player.getStackInHand(Hand.valueOf(PhotographyHud.handUsingPhotographyCamera)).use(world, player, Hand.valueOf(PhotographyHud.handUsingPhotographyCamera));
-                return ActionResult.FAIL;
-            } else if (player.getStackInHand(Hand.MAIN_HAND).getItem() == photographyCameraStack.getItem()) {
-                if (Objects.equals(player.getStackInHand(Hand.MAIN_HAND).getComponents().get(DataComponentTypes.CUSTOM_DATA), photographyCameraStack.getComponents().get(DataComponentTypes.CUSTOM_DATA))) {
-                    player.getStackInHand(Hand.MAIN_HAND).use(world, player, Hand.MAIN_HAND);
-                    return ActionResult.FAIL;
+                player.getItemInHand(InteractionHand.valueOf(PhotographyHud.handUsingPhotographyCamera)).use(world, player, InteractionHand.valueOf(PhotographyHud.handUsingPhotographyCamera));
+                return InteractionResult.FAIL;
+            } else if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == photographyCameraStack.getItem()) {
+                if (Objects.equals(player.getItemInHand(InteractionHand.MAIN_HAND).getComponents().get(DataComponents.CUSTOM_DATA), photographyCameraStack.getComponents().get(DataComponents.CUSTOM_DATA))) {
+                    player.getItemInHand(InteractionHand.MAIN_HAND).use(world, player, InteractionHand.MAIN_HAND);
+                    return InteractionResult.FAIL;
                 }
             }
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
 
         UseItemCallback.EVENT.register((player, world, hand) -> {
             if (((PlayerIsUsingCamera) player).isUsingPhotographyCamera()) {
-                player.getStackInHand(Hand.valueOf(PhotographyHud.handUsingPhotographyCamera)).use(world, player, Hand.valueOf(PhotographyHud.handUsingPhotographyCamera));
-                return ActionResult.FAIL;
-            } else if (player.getStackInHand(Hand.MAIN_HAND).getItem() == photographyCameraStack.getItem()) {
-                if (Objects.equals(player.getStackInHand(Hand.MAIN_HAND).getComponents().get(DataComponentTypes.CUSTOM_DATA), photographyCameraStack.getComponents().get(DataComponentTypes.CUSTOM_DATA))) {
-                    player.getStackInHand(Hand.MAIN_HAND).use(world, player, Hand.MAIN_HAND);
-                    return ActionResult.FAIL;
+                player.getItemInHand(InteractionHand.valueOf(PhotographyHud.handUsingPhotographyCamera)).use(world, player, InteractionHand.valueOf(PhotographyHud.handUsingPhotographyCamera));
+                return InteractionResult.FAIL;
+            } else if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == photographyCameraStack.getItem()) {
+                if (Objects.equals(player.getItemInHand(InteractionHand.MAIN_HAND).getComponents().get(DataComponents.CUSTOM_DATA), photographyCameraStack.getComponents().get(DataComponents.CUSTOM_DATA))) {
+                    player.getItemInHand(InteractionHand.MAIN_HAND).use(world, player, InteractionHand.MAIN_HAND);
+                    return InteractionResult.FAIL;
                 }
             }
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
     }
 
-    private void onHudRender(DrawContext context, RenderTickCounter renderTickCounter) {
+    private void onHudRender(GuiGraphics context, DeltaTracker renderTickCounter) {
         if (PhotographyHud.isUsingPhotographyCamera) {
             PhotographyHud.renderPhotographyCameraOverlay(context);
         }

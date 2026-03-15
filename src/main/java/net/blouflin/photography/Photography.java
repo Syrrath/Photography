@@ -6,13 +6,16 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.CustomModelDataComponent;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.item.*;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.CustomModelData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,14 +24,14 @@ import java.util.List;
 public class Photography implements ModInitializer {
 	public static final String MOD_ID = "Photography";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-	public static final Identifier CAMERA_SHUTTER_SOUND = Identifier.of("photography","camera_shutter");
-	public static SoundEvent CAMERA_SHUTTER = SoundEvent.of(CAMERA_SHUTTER_SOUND);
+	public static final Identifier CAMERA_SHUTTER_SOUND = Identifier.fromNamespaceAndPath("photography","camera_shutter");
+	public static SoundEvent CAMERA_SHUTTER = SoundEvent.createVariableRangeEvent(CAMERA_SHUTTER_SOUND);
 
 	@Override
 	public void onInitialize() {
 		//LOGGER.info("Photography mod (by BlouFlin) loaded !");
 
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(this::addItemsToCreativeTab);
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(this::addItemsToCreativeTab);
 
 		PayloadTypeRegistry.playS2C().register(CreatePicturePayload.ID, CreatePicturePayload.CODEC);
 		PayloadTypeRegistry.playS2C().register(GetUsingPhotographyCameraPayload.ID, GetUsingPhotographyCameraPayload.CODEC);
@@ -46,19 +49,19 @@ public class Photography implements ModInitializer {
 
 	private void addItemsToCreativeTab(FabricItemGroupEntries entries) {
 		ItemStack photographyCamera = new ItemStack(Items.SPYGLASS);
-		photographyCamera.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
+		photographyCamera.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, comp -> comp.update(currentNbt -> {
 			currentNbt.putBoolean("isPhotographyCamera",true);
 		}));
-        photographyCamera.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(List.of(56774F), List.of(), List.of(), List.of()));
-		photographyCamera.set(DataComponentTypes.ITEM_NAME, Text.literal("Camera"));
+        photographyCamera.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(56774F), List.of(), List.of(), List.of()));
+		photographyCamera.set(DataComponents.ITEM_NAME, Component.literal("Camera"));
 		entries.addAfter(Items.MAP, photographyCamera);
 
 		ItemStack photographicPaper = new ItemStack(Items.FILLED_MAP);
-		photographicPaper.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
+		photographicPaper.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, comp -> comp.update(currentNbt -> {
 			currentNbt.putBoolean("isPhotographyEmptyMap",true);
 		}));
-        photographicPaper.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(List.of(56775F), List.of(), List.of(), List.of()));
-		photographicPaper.set(DataComponentTypes.ITEM_NAME, Text.translatableWithFallback("photography:empty_map", "Photographic Paper"));
+        photographicPaper.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(56775F), List.of(), List.of(), List.of()));
+		photographicPaper.set(DataComponents.ITEM_NAME, Component.translatableWithFallback("photography:empty_map", "Photographic Paper"));
 		entries.addBefore(Items.WRITABLE_BOOK, photographicPaper);
 	}
 

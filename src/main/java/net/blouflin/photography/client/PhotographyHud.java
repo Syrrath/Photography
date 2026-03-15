@@ -2,17 +2,17 @@ package net.blouflin.photography.client;
 
 import net.blouflin.photography.networking.SetUsingPhotographyCameraPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.concurrent.CompletableFuture;
@@ -25,33 +25,33 @@ public class PhotographyHud {
     public static boolean canTakePhoto = false;
     public static boolean isTakingPhoto = false;
     public static boolean isHUDhidden;
-    public static String handUsingPhotographyCamera = Hand.MAIN_HAND.name();
+    public static String handUsingPhotographyCamera = InteractionHand.MAIN_HAND.name();
     public static double zoomAmount;
     public static double defaultMouseSensitivity;
-    public static final Identifier CAMERA_SCOPE = Identifier.of("photography","camera_scope"); // requires path of textures/gui/sprites/
-    public static final Identifier CAMERA_SCOPE_CLEAR = Identifier.of("photography","camera_scope_clear");
-    public static final Identifier CAMERA_SCOPE_FLASH = Identifier.of("photography","camera_scope_flash");
+    public static final Identifier CAMERA_SCOPE = Identifier.fromNamespaceAndPath("photography","camera_scope"); // requires path of textures/gui/sprites/
+    public static final Identifier CAMERA_SCOPE_CLEAR = Identifier.fromNamespaceAndPath("photography","camera_scope_clear");
+    public static final Identifier CAMERA_SCOPE_FLASH = Identifier.fromNamespaceAndPath("photography","camera_scope_flash");
     public static Identifier CAMERA_SCOPE_TO_RENDER = CAMERA_SCOPE;
-    private static final MinecraftClient client = MinecraftClient.getInstance();
-    private static final KeyBinding escapeKeybinding = new KeyBinding("key.keyboard.escape", GLFW.GLFW_KEY_ESCAPE, KeyBinding.Category.MISC);
+    private static final Minecraft client = Minecraft.getInstance();
+    private static final KeyMapping escapeKeybinding = new KeyMapping("key.keyboard.escape", GLFW.GLFW_KEY_ESCAPE, KeyMapping.Category.MISC);
 
     private static CompletableFuture<Void> screenshotFuture;
     public static void setScreenshotFuture(CompletableFuture<Void> future) {
         screenshotFuture = future;
     }
 
-    public static void renderPhotographyCameraOverlay(DrawContext context) {
+    public static void renderPhotographyCameraOverlay(GuiGraphics context) {
 
-        float f = client.getRenderTickCounter().getDynamicDeltaTicks();
-        spyglassScale = MathHelper.lerp(0.5f * f, spyglassScale, 1.125f);
+        float f = client.getDeltaTracker().getGameTimeDeltaTicks();
+        spyglassScale = Mth.lerp(0.5f * f, spyglassScale, 1.125f);
 
-        if (client.options.getPerspective().isFirstPerson() && client.currentScreen == null) {
-            client.options.hudHidden = true;
+        if (client.options.getCameraType().isFirstPerson() && client.screen == null) {
+            client.options.hideGui = true;
             checkIsPhotographyCameraOpen(client);
             if (!isHUDhidden) {
                 renderSpyglassOverlay(context, spyglassScale);
             }
-            spyglassFlashOpacity = MathHelper.lerp(0.1f * f, spyglassFlashOpacity, 0.0125f);
+            spyglassFlashOpacity = Mth.lerp(0.1f * f, spyglassFlashOpacity, 0.0125f);
 
             if (spyglassScale >= 1.1f && spyglassFlashOpacity <= 0.1f && !isTakingPhoto) {
                 canTakePhoto = true;
@@ -59,7 +59,7 @@ public class PhotographyHud {
                 canTakePhoto = false;
             }
 
-            if (escapeKeybinding.isPressed()) {
+            if (escapeKeybinding.isDown()) {
                 stopRenderPhotographyCameraOverlay();
             }
         } else {
@@ -73,25 +73,25 @@ public class PhotographyHud {
     }
 
     public static void stopRenderPhotographyCameraOverlay() {
-        client.options.getMouseSensitivity().setValue(defaultMouseSensitivity);
-        client.options.hudHidden = isHUDhidden;
+        client.options.sensitivity().set(defaultMouseSensitivity);
+        client.options.hideGui = isHUDhidden;
         spyglassFlashOpacity = 0.0f;
         spyglassScale = 0.5f;
         canTakePhoto = false;
         zoomAmount = 1.0f;
         PhotographyHud.isUsingPhotographyCamera = false;
-        client.player.playSound(SoundEvents.ITEM_SPYGLASS_STOP_USING, 1.0f, 1.0f);
+        client.player.playSound(SoundEvents.SPYGLASS_STOP_USING, 1.0f, 1.0f);
         SetUsingPhotographyCameraPayload payload = new SetUsingPhotographyCameraPayload(isUsingPhotographyCamera, handUsingPhotographyCamera);
         ClientPlayNetworking.send(payload);
     }
 
-    public static void checkIsPhotographyCameraOpen(MinecraftClient client) {
+    public static void checkIsPhotographyCameraOpen(Minecraft client) {
         boolean isPhotographyCamera = false;
         String toContain = "isPhotographyCamera:1b";
-        PlayerEntity player = client.player;
-        Hand hand = Hand.valueOf(handUsingPhotographyCamera);
-        if (player.getStackInHand(hand).getComponents().contains(DataComponentTypes.CUSTOM_DATA)) {
-            isPhotographyCamera = player.getStackInHand(hand).getComponents().get(DataComponentTypes.CUSTOM_DATA).toString().contains(toContain);
+        Player player = client.player;
+        InteractionHand hand = InteractionHand.valueOf(handUsingPhotographyCamera);
+        if (player.getItemInHand(hand).getComponents().has(DataComponents.CUSTOM_DATA)) {
+            isPhotographyCamera = player.getItemInHand(hand).getComponents().get(DataComponents.CUSTOM_DATA).toString().contains(toContain);
         }
         if (!isPhotographyCamera) {
             if (PhotographyHud.isUsingPhotographyCamera) {
@@ -100,25 +100,25 @@ public class PhotographyHud {
         }
     }
 
-    private static void renderSpyglassOverlay(DrawContext context, float scale) {
+    private static void renderSpyglassOverlay(GuiGraphics context, float scale) {
         float f;
-        float g = f = (float)Math.min(context.getScaledWindowWidth(), context.getScaledWindowHeight());
-        float h = Math.min((float)context.getScaledWindowWidth() / f, (float)context.getScaledWindowHeight() / g) * scale;
-        int i = MathHelper.floor(f * h);
-        int j = MathHelper.floor(g * h);
-        int k = (context.getScaledWindowWidth() - i) / 2;
-        int l = (context.getScaledWindowHeight() - j) / 2;
+        float g = f = (float)Math.min(context.guiWidth(), context.guiHeight());
+        float h = Math.min((float)context.guiWidth() / f, (float)context.guiHeight() / g) * scale;
+        int i = Mth.floor(f * h);
+        int j = Mth.floor(g * h);
+        int k = (context.guiWidth() - i) / 2;
+        int l = (context.guiHeight() - j) / 2;
         int m = k + i;
         int n = l + j;
 
-        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, CAMERA_SCOPE_TO_RENDER, k, l, i, j);
+        context.blitSprite(RenderPipelines.GUI_TEXTURED, CAMERA_SCOPE_TO_RENDER, k, l, i, j);
 
-        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, CAMERA_SCOPE_FLASH, k, l, i, j, spyglassFlashOpacity);
+        context.blitSprite(RenderPipelines.GUI_TEXTURED, CAMERA_SCOPE_FLASH, k, l, i, j, spyglassFlashOpacity);
 
-        context.fill(RenderPipelines.GUI, 0, n, context.getScaledWindowWidth(), context.getScaledWindowHeight(), Colors.BLACK);
-        context.fill(RenderPipelines.GUI, 0, 0, context.getScaledWindowWidth(), l, Colors.BLACK);
-        context.fill(RenderPipelines.GUI, 0, l, k, n, Colors.BLACK);
-        context.fill(RenderPipelines.GUI, m, l, context.getScaledWindowWidth(), n, Colors.BLACK);
+        context.fill(RenderPipelines.GUI, 0, n, context.guiWidth(), context.guiHeight(), CommonColors.BLACK);
+        context.fill(RenderPipelines.GUI, 0, 0, context.guiWidth(), l, CommonColors.BLACK);
+        context.fill(RenderPipelines.GUI, 0, l, k, n, CommonColors.BLACK);
+        context.fill(RenderPipelines.GUI, m, l, context.guiWidth(), n, CommonColors.BLACK);
 
         //context.drawText(MinecraftClient.getInstance().textRenderer, "Hello, world!", k, l, 0xFFFFFFFF, false);
 

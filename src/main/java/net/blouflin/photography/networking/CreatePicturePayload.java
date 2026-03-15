@@ -5,36 +5,35 @@ import net.blouflin.image2map.renderer.MapRenderer;
 import net.blouflin.photography.PhotographyUtil;
 import net.blouflin.photography.client.PhotographyHud;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.ScreenshotRecorder;
-import net.minecraft.item.map.MapState;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.registry.RegistryWrapper;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.Screenshot;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
-public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implements CustomPayload {
-    public static final CustomPayload.Id<CreatePicturePayload> ID = CustomPayload.id("photography_create_picture");
-    public static final PacketCodec<PacketByteBuf, CreatePicturePayload> CODEC = PacketCodec.of((value, buf) -> buf.writeInt(value.id).writeNbt(value.nbtCompound), buf -> new CreatePicturePayload(buf.readInt(),buf.readNbt()));
+public record CreatePicturePayload(Integer id, CompoundTag nbtCompound) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<CreatePicturePayload> ID = CustomPacketPayload.createType("photography_create_picture");
+    public static final StreamCodec<FriendlyByteBuf, CreatePicturePayload> CODEC = StreamCodec.ofMember((value, buf) -> buf.writeInt(value.id).writeNbt(value.nbtCompound), buf -> new CreatePicturePayload(buf.readInt(),buf.readNbt()));
 
     @Override
-    public Id<? extends CustomPayload> getId() {
+    public Type<? extends CustomPacketPayload> type() {
         return ID;
     }
 
-    public static void receive(MinecraftClient client, Integer id, NbtCompound nbtCompound) {
+    public static void receive(Minecraft client, Integer id, CompoundTag nbtCompound) {
 
         CompletableFuture<Void> future = new CompletableFuture<>();
 
         client.execute(() -> {
 
-            RegistryWrapper.WrapperLookup registryLookup = client.player.getRegistryManager();
-            MapState mapState = PhotographyUtil.fromNbt(nbtCompound);
+            HolderLookup.Provider registryLookup = client.player.registryAccess();
+            MapItemSavedData mapState = PhotographyUtil.fromNbt(nbtCompound);
 
             PhotographyHud.CAMERA_SCOPE_TO_RENDER = PhotographyHud.CAMERA_SCOPE_CLEAR;
 
@@ -47,8 +46,8 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
                 PhotographyHud.spyglassFlashOpacity = 1.0f;
                 PhotographyHud.isTakingPhoto = false;
 
-                ScreenshotRecorder.takeScreenshot(client.getFramebuffer(), (nativeImage -> {
-                    int[] pixels = nativeImage.copyPixelsArgb();
+                Screenshot.takeScreenshot(client.getMainRenderTarget(), (nativeImage -> {
+                    int[] pixels = nativeImage.getPixels();
                     BufferedImage bufferedImage = new BufferedImage(nativeImage.getWidth(), nativeImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
                     bufferedImage.setRGB(0, 0, nativeImage.getWidth(), nativeImage.getHeight(), pixels, 0, nativeImage.getWidth());
                     //System.out.println("bufferedImage: "+bufferedImage);
@@ -56,13 +55,13 @@ public record CreatePicturePayload(Integer id, NbtCompound nbtCompound) implemen
 
                     try {
                         bufferedImage = CreatePicturePayload.crop(bufferedImage, bufferedImage.getHeight(), bufferedImage.getHeight());
-                        ScreenshotRecorder.saveScreenshot(client.runDirectory, client.getFramebuffer(), (text) -> {});
+                        Screenshot.grab(client.gameDirectory, client.getMainRenderTarget(), (text) -> {});
 
                         // TODO Debug
                         //System.out.println("bufferedImage: "+bufferedImage);
 
                         //System.out.println("Printing nbtCompound from CreatePicturePayload: " + nbtCompound);
-                        MapState mapState1 = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, id, mapState);
+                        MapItemSavedData mapState1 = MapRenderer.render(bufferedImage, Image2Map.DitherMode.FLOYD, id, mapState);
                         //System.out.println("Printing nbtCompound from CreatePicturePayload after: " + nbtCompound);
 
                         // TODO Debug

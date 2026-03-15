@@ -5,15 +5,18 @@ import net.blouflin.photography.networking.CreateMapStatePayload;
 import net.blouflin.photography.networking.SetUsingPhotographyCameraPayload;
 import net.blouflin.photography.player.PlayerIsUsingCamera;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.*;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.stat.Stats;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.*;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.SpyglassItem;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,21 +28,21 @@ import java.util.Objects;
 public abstract class SpyglassItemMixin {
 
     @Inject(method = "use", at = @At("HEAD"), cancellable = true)
-    private void injected(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-        cir.setReturnValue(new ActionResult.Pass());
+    private void injected(Level world, Player user, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+        cir.setReturnValue(new InteractionResult.Pass());
 
-        if (world.isClient()) {
+        if (world.isClientSide()) {
 
             boolean isPhotographyCamera = false;
             String toContain = "isPhotographyCamera:1b";
-            MinecraftClient client = MinecraftClient.getInstance();
+            Minecraft client = Minecraft.getInstance();
 
-            if (user.getStackInHand(hand).getComponents().contains(DataComponentTypes.CUSTOM_DATA)) {
-                isPhotographyCamera = user.getStackInHand(hand).getComponents().get(DataComponentTypes.CUSTOM_DATA).toString().contains(toContain);
+            if (user.getItemInHand(hand).getComponents().has(DataComponents.CUSTOM_DATA)) {
+                isPhotographyCamera = user.getItemInHand(hand).getComponents().get(DataComponents.CUSTOM_DATA).toString().contains(toContain);
             }
 
             if (isPhotographyCamera) {
-                if (client.options.getPerspective().isFirstPerson()) {
+                if (client.options.getCameraType().isFirstPerson()) {
                     if (PhotographyHud.isUsingPhotographyCamera) {
                         if (Objects.equals(PhotographyHud.handUsingPhotographyCamera, hand.toString())) {
                             if (PhotographyHud.canTakePhoto) {
@@ -52,32 +55,32 @@ public abstract class SpyglassItemMixin {
                     } else {
                         PhotographyHud.zoomAmount = 1.0f;
                         PhotographyHud.handUsingPhotographyCamera = hand.toString();
-                        PhotographyHud.defaultMouseSensitivity = client.options.getMouseSensitivity().getValue();
-                        PhotographyHud.isHUDhidden = client.options.hudHidden;
-                        client.options.hudHidden = true;
+                        PhotographyHud.defaultMouseSensitivity = client.options.sensitivity().get();
+                        PhotographyHud.isHUDhidden = client.options.hideGui;
+                        client.options.hideGui = true;
                         PhotographyHud.isUsingPhotographyCamera = true;
-                        user.playSound(SoundEvents.ITEM_SPYGLASS_USE, 1.0f, 1.0f);
+                        user.playSound(SoundEvents.SPYGLASS_USE, 1.0f, 1.0f);
                         SetUsingPhotographyCameraPayload payload = new SetUsingPhotographyCameraPayload(PhotographyHud.isUsingPhotographyCamera, PhotographyHud.handUsingPhotographyCamera);
                         ClientPlayNetworking.send(payload);
                     }
                 }
             } else {
-                user.playSound(SoundEvents.ITEM_SPYGLASS_USE, 1.0f, 1.0f);
-                user.incrementStat(Stats.USED.getOrCreateStat(Items.SPYGLASS));
-                cir.setReturnValue(ItemUsage.consumeHeldItem(world, user, hand));
+                user.playSound(SoundEvents.SPYGLASS_USE, 1.0f, 1.0f);
+                user.awardStat(Stats.ITEM_USED.get(Items.SPYGLASS));
+                cir.setReturnValue(ItemUtils.startUsingInstantly(world, user, hand));
             }
         } else {
             boolean isPhotographyCamera = false;
             String toContain = "isPhotographyCamera:1b";
 
-            if (user.getStackInHand(hand).getComponents().contains(DataComponentTypes.CUSTOM_DATA)) {
-                isPhotographyCamera = user.getStackInHand(hand).getComponents().get(DataComponentTypes.CUSTOM_DATA).toString().contains(toContain);
+            if (user.getItemInHand(hand).getComponents().has(DataComponents.CUSTOM_DATA)) {
+                isPhotographyCamera = user.getItemInHand(hand).getComponents().get(DataComponents.CUSTOM_DATA).toString().contains(toContain);
             }
             if (!isPhotographyCamera) {
                 if (!((PlayerIsUsingCamera) user).isUsingPhotographyCamera()) {
-                    user.playSound(SoundEvents.ITEM_SPYGLASS_USE, 1.0f, 1.0f);
-                    user.incrementStat(Stats.USED.getOrCreateStat(Items.SPYGLASS));
-                    cir.setReturnValue(ItemUsage.consumeHeldItem(world, user, hand));
+                    user.playSound(SoundEvents.SPYGLASS_USE, 1.0f, 1.0f);
+                    user.awardStat(Stats.ITEM_USED.get(Items.SPYGLASS));
+                    cir.setReturnValue(ItemUtils.startUsingInstantly(world, user, hand));
                 }
             }
         }

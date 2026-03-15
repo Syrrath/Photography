@@ -2,14 +2,15 @@ package net.blouflin.photography;
 
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.DataResult;
-import net.minecraft.item.map.*;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.MapItem.*;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.slf4j.Logger;
 
 import java.util.Objects;
@@ -17,7 +18,7 @@ import java.util.Objects;
 public class PhotographyUtil {
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public static MapState fromNbt(NbtCompound nbt) {
+    public static MapItemSavedData fromNbt(CompoundTag nbt) {
 
         // unused map data; the MapState.of method used below doesn't accept these
 //        int i = nbt.getInt("xCenter", 0);
@@ -26,11 +27,11 @@ public class PhotographyUtil {
 //        boolean bl2 = nbt.getBoolean("unlimitedTracking", false);
 
         // used map data; provided to MapState.of below
-        String dimension = nbt.getString("dimension", "minecraft:overworld");
-        byte scale = (byte) MathHelper.clamp(nbt.getByte("scale", (byte) 3), 0, 4);
-        boolean locked = nbt.getBoolean("locked", true);
+        String dimension = nbt.getStringOr("dimension", "minecraft:overworld");
+        byte scale = (byte) Mth.clamp(nbt.getByteOr("scale", (byte) 3), 0, 4);
+        boolean locked = nbt.getBooleanOr("locked", true);
 
-        MapState mapState = MapState.of(scale, locked, RegistryKey.of(RegistryKeys.WORLD, Identifier.of(dimension)));
+        MapItemSavedData mapState = MapItemSavedData.createForClient(scale, locked, ResourceKey.create(Registries.DIMENSION, Identifier.parse(dimension)));
 
         // add color data to map after creating it
         byte[] dummyByte = new byte[0];
@@ -43,7 +44,7 @@ public class PhotographyUtil {
     }
 
 
-    public static NbtCompound writeNbt(NbtCompound nbt, MapState state) {
+    public static CompoundTag writeNbt(CompoundTag nbt, MapItemSavedData state) {
 
         //unused data; see fromNbt method above
 //        nbt.putInt("xCenter", state.centerX);
@@ -54,7 +55,7 @@ public class PhotographyUtil {
 
 
         // get dimension
-        DataResult<NbtElement> var10000 = Identifier.CODEC.encodeStart(NbtOps.INSTANCE, state.dimension.getValue());
+        DataResult<Tag> var10000 = Identifier.CODEC.encodeStart(NbtOps.INSTANCE, state.dimension.identifier());
         Logger var10001 = LOGGER;
         Objects.requireNonNull(var10001);
         var10000.resultOrPartial(var10001::error).ifPresent((nbtElement) -> nbt.put("dimension", nbtElement));

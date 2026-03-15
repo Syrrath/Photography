@@ -2,21 +2,17 @@ package net.blouflin.image2map.renderer;
 
 import net.blouflin.image2map.Image2Map;
 import net.blouflin.photography.PhotographyUtil;
-import net.minecraft.block.MapColor;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.MapIdComponent;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.map.MapState;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.saveddata.maps.MapId;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
@@ -32,7 +28,7 @@ public class MapRenderer {
     public static MapColor[] getColors(){
         MapColor[] colors = new MapColor[64];
         for (int i = 0; i<= 63; i++){
-            colors[i] = MapColor.get(i);
+            colors[i] = MapColor.byId(i);
         }
         return colors;
     }
@@ -48,27 +44,27 @@ public class MapRenderer {
         return new double[] { color[0] * coeff, color[1] * coeff, color[2] * coeff };
     }
 
-    public static ItemStack render(BufferedImage image, Image2Map.DitherMode mode, ServerWorld world, double x, double z,
-                                   PlayerEntity player) {
+    public static ItemStack render(BufferedImage image, Image2Map.DitherMode mode, ServerLevel world, double x, double z,
+                                   Player player) {
         // mojang removed the ability to set a map as locked via the "locked" field in
         // 1.17, so we create and apply our own MapState instead
         ItemStack stack = new ItemStack(Items.FILLED_MAP);
-        MapIdComponent id = world.increaseAndGetMapId();
-        NbtCompound nbt = new NbtCompound();
-        RegistryWrapper.WrapperLookup registryLookup = player.getRegistryManager();
-        nbt.putString("dimension", player.getEntityWorld().getRegistryKey().getValue().toString());
+        MapId id = world.getFreeMapId();
+        CompoundTag nbt = new CompoundTag();
+        HolderLookup.Provider registryLookup = player.registryAccess();
+        nbt.putString("dimension", player.level().dimension().identifier().toString());
         nbt.putInt("xCenter", (int) player.getX());
         nbt.putInt("zCenter", (int) player.getZ());
         nbt.putBoolean("locked", true);
         nbt.putBoolean("unlimitedTracking", false);
         nbt.putBoolean("showDecorations", false);
         nbt.putByte("scale", (byte) 3);
-        nbt.put("banners", new NbtList());
-        nbt.put("frames", new NbtList());
-        MapState state = PhotographyUtil.fromNbt(nbt);
+        nbt.put("banners", new ListTag());
+        nbt.put("frames", new ListTag());
+        MapItemSavedData state = PhotographyUtil.fromNbt(nbt);
 
-        world.putMapState(id, state);
-        stack.set(DataComponentTypes.MAP_ID, id);
+        world.setMapData(id, state);
+        stack.set(DataComponents.MAP_ID, id);
 
         Image resizedImage = image.getScaledInstance(128, 128, Image.SCALE_DEFAULT);
         BufferedImage resized = convertToBufferedImage(resizedImage);
@@ -91,7 +87,7 @@ public class MapRenderer {
         return stack;
     }
 
-    public static MapState render(BufferedImage image, Image2Map.DitherMode mode, int id, MapState state) {
+    public static MapItemSavedData render(BufferedImage image, Image2Map.DitherMode mode, int id, MapItemSavedData state) {
         // mojang removed the ability to set a map as locked via the "locked" field in
         // 1.17, so we create and apply our own MapState instead
 
@@ -121,7 +117,7 @@ public class MapRenderer {
     }
 
     private static Color mapColorToRGBColor(MapColor[] colors, int color) {
-        Color mcColor = new Color(colors[color >> 2].color);
+        Color mcColor = new Color(colors[color >> 2].col);
         double[] mcColorVec = { (double) mcColor.getRed(), (double) mcColor.getGreen(), (double) mcColor.getBlue() };
         double coeff = shadeCoeffs[color & 3];
         return new Color((int) (mcColorVec[0] * coeff), (int) (mcColorVec[1] * coeff), (int) (mcColorVec[2] * coeff));
@@ -190,7 +186,7 @@ public class MapRenderer {
         int best_color = 0;
         double lowest_distance = 10000;
         for (int k = 0; k < colors.length; k++) {
-            Color mcColor = new Color(colors[k].color);
+            Color mcColor = new Color(colors[k].col);
             double[] mcColorVec = { (double) mcColor.getRed() / 255.0, (double) mcColor.getGreen() / 255.0,
                     (double) mcColor.getBlue() / 255.0 };
             for (int shadeInd = 0; shadeInd < shadeCoeffs.length; shadeInd++) {

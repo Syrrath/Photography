@@ -2,9 +2,9 @@ package net.blouflin.photography.mixin;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerConfigurationNetworkHandler;
-import net.minecraft.util.Identifier;
+import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -16,7 +16,7 @@ import java.util.Map;
 public class RegistrySyncManagerMixin {
 
     @Inject(method = "configureClient", at = @At(value = "INVOKE", target = "Lnet/fabricmc/fabric/impl/registry/sync/RegistrySyncManager;createAndPopulateRegistryMap()Ljava/util/Map;"), cancellable = true)
-    private static void disableRegistryManager(ServerConfigurationNetworkHandler handler, MinecraftServer server, CallbackInfo ci) {
+    private static void disableRegistryManager(ServerConfigurationPacketListenerImpl handler, MinecraftServer server, CallbackInfo ci) {
 
         ci.cancel();
 
@@ -27,7 +27,7 @@ public class RegistrySyncManagerMixin {
             return;
         }
 
-        map.get(Identifier.of("minecraft","sound_event")).remove(Identifier.of("photography","camera_shutter"));
+        map.get(Identifier.fromNamespaceAndPath("minecraft","sound_event")).remove(Identifier.fromNamespaceAndPath("photography","camera_shutter"));
 
         handler.addTask(new RegistrySyncManager.SyncConfigurationTask(handler, map));
     }
