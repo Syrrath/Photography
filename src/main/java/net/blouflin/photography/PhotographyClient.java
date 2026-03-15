@@ -28,6 +28,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
 
 import static net.blouflin.photography.Photography.CAMERA_SHUTTER;
@@ -50,33 +52,53 @@ public class PhotographyClient implements ClientModInitializer {
         HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("photography", "photography_hud"), this::onHudRender);
         //HudRenderCallback.EVENT.register(this::onHudRender);
 
-//        ItemStack photographyCameraStack = new ItemStack(Items.SPYGLASS);
-//        photographyCameraStack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, comp -> comp.update(currentNbt -> {
-//            currentNbt.putBoolean("isPhotographyCamera",true);
-//        }));
-
-        ItemStackTemplate photographyCameraStack = new ItemStackTemplate(Items.SPYGLASS, DataComponentPatch.builder().build());
-
-
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+
+
+            ItemStack photographyCameraStack = null;
+            try {
+                photographyCameraStack = new ItemStack(Items.SPYGLASS);
+                photographyCameraStack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, comp -> comp.update(currentNbt -> {
+                    currentNbt.putBoolean("isPhotographyCamera",true);
+                }));
+            } catch (NullPointerException exception) {
+                // ItemStacks no longer exist until a world is loaded
+            }
+
+            System.out.println(photographyCameraStack);
+
             if (((PlayerIsUsingCamera) player).isUsingPhotographyCamera()) {
                 player.getItemInHand(InteractionHand.valueOf(PhotographyHud.handUsingPhotographyCamera)).use(world, player, InteractionHand.valueOf(PhotographyHud.handUsingPhotographyCamera));
                 return InteractionResult.FAIL;
-            } else if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == photographyCameraStack.item()) {
-                if (Objects.equals(player.getItemInHand(InteractionHand.MAIN_HAND).getComponents().get(DataComponents.CUSTOM_DATA), photographyCameraStack.get(DataComponents.CUSTOM_DATA))) {
+            } else if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == photographyCameraStack.getItem()) {
+                if (Objects.equals(player.getItemInHand(InteractionHand.MAIN_HAND).getComponents().get(DataComponents.CUSTOM_DATA), photographyCameraStack.getComponents().get(DataComponents.CUSTOM_DATA))) {
                     player.getItemInHand(InteractionHand.MAIN_HAND).use(world, player, InteractionHand.MAIN_HAND);
                     return InteractionResult.FAIL;
                 }
             }
+
             return InteractionResult.PASS;
+
+
         });
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+            ItemStack photographyCameraStack = null;
+
+            try {
+                photographyCameraStack = new ItemStack(Items.SPYGLASS);
+                photographyCameraStack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, comp -> comp.update(currentNbt -> {
+                    currentNbt.putBoolean("isPhotographyCamera",true);
+                }));
+            } catch (NullPointerException exception) {
+                // ItemStacks no longer exist until a world is loaded
+            }
+
             if (((PlayerIsUsingCamera) player).isUsingPhotographyCamera()) {
                 player.getItemInHand(InteractionHand.valueOf(PhotographyHud.handUsingPhotographyCamera)).use(world, player, InteractionHand.valueOf(PhotographyHud.handUsingPhotographyCamera));
                 return InteractionResult.FAIL;
-            } else if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == photographyCameraStack.item()) {
-                if (Objects.equals(player.getItemInHand(InteractionHand.MAIN_HAND).getComponents().get(DataComponents.CUSTOM_DATA), photographyCameraStack.get(DataComponents.CUSTOM_DATA))) {
+            } else if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == photographyCameraStack.getItem()) {
+                if (Objects.equals(player.getItemInHand(InteractionHand.MAIN_HAND).getComponents().get(DataComponents.CUSTOM_DATA), photographyCameraStack.getComponents().get(DataComponents.CUSTOM_DATA))) {
                     player.getItemInHand(InteractionHand.MAIN_HAND).use(world, player, InteractionHand.MAIN_HAND);
                     return InteractionResult.FAIL;
                 }
@@ -85,11 +107,22 @@ public class PhotographyClient implements ClientModInitializer {
         });
 
         UseItemCallback.EVENT.register((player, world, hand) -> {
+            ItemStack photographyCameraStack = null;
+
+            try {
+                photographyCameraStack = new ItemStack(Items.SPYGLASS);
+                photographyCameraStack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, comp -> comp.update(currentNbt -> {
+                    currentNbt.putBoolean("isPhotographyCamera",true);
+                }));
+            } catch (NullPointerException exception) {
+                // ItemStacks no longer exist until a world is loaded
+            }
+
             if (((PlayerIsUsingCamera) player).isUsingPhotographyCamera()) {
                 player.getItemInHand(InteractionHand.valueOf(PhotographyHud.handUsingPhotographyCamera)).use(world, player, InteractionHand.valueOf(PhotographyHud.handUsingPhotographyCamera));
                 return InteractionResult.FAIL;
-            } else if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == photographyCameraStack.item()) {
-                if (Objects.equals(player.getItemInHand(InteractionHand.MAIN_HAND).getComponents().get(DataComponents.CUSTOM_DATA), photographyCameraStack.get(DataComponents.CUSTOM_DATA))) {
+            } else if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == photographyCameraStack.getItem()) {
+                if (Objects.equals(player.getItemInHand(InteractionHand.MAIN_HAND).getComponents().get(DataComponents.CUSTOM_DATA), photographyCameraStack.getComponents().get(DataComponents.CUSTOM_DATA))) {
                     player.getItemInHand(InteractionHand.MAIN_HAND).use(world, player, InteractionHand.MAIN_HAND);
                     return InteractionResult.FAIL;
                 }
