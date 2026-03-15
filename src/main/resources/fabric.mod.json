@@ -26,13 +26,13 @@
 			"net.blouflin.photography.PhotographyDataGenerator"
 		]
 	},
-    "accessWidener": "photography.classtweaker",
+    "accessWidener_": "",
 	"mixins": [
 		"photography.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.15.11",
-		"minecraft": ">=1.21.9 <=1.21.11",
+		"minecraft": "*",
 		"java": ">=21",
 		"fabric-api": "*"
 	},

@@ -4,7 +4,7 @@ import net.blouflin.photography.networking.SetUsingPhotographyCameraPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
@@ -40,7 +40,7 @@ public class PhotographyHud {
         screenshotFuture = future;
     }
 
-    public static void renderPhotographyCameraOverlay(GuiGraphics context) {
+    public static void renderPhotographyCameraOverlay(GuiGraphicsExtractor context) {
 
         float f = client.getDeltaTracker().getGameTimeDeltaTicks();
         spyglassScale = Mth.lerp(0.5f * f, spyglassScale, 1.125f);
@@ -100,7 +100,7 @@ public class PhotographyHud {
         }
     }
 
-    private static void renderSpyglassOverlay(GuiGraphics context, float scale) {
+    private static void renderSpyglassOverlay(GuiGraphicsExtractor context, float scale) {
         float f;
         float g = f = (float)Math.min(context.guiWidth(), context.guiHeight());
         float h = Math.min((float)context.guiWidth() / f, (float)context.guiHeight() / g) * scale;

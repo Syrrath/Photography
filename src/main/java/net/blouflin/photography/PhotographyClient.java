@@ -8,21 +8,24 @@ import net.blouflin.photography.player.PlayerIsUsingCamera;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+//import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.*;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 import java.util.Objects;
@@ -44,19 +47,23 @@ public class PhotographyClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(GetUsingPhotographyCameraPayload.ID, (payload, handler) -> GetUsingPhotographyCameraPayload.receive(handler.client(), payload.player(), payload.isUsingPhotographyCamera(), payload.handUsingPhotographyCamera()));
         ClientPlayNetworking.registerGlobalReceiver(PlayCameraShutterSoundPayload.ID, (payload, handler) -> PlayCameraShutterSoundPayload.receive(handler.client(), payload.globalPos()));
 
-        HudRenderCallback.EVENT.register(this::onHudRender);
+        HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("photography", "photography_hud"), this::onHudRender);
+        //HudRenderCallback.EVENT.register(this::onHudRender);
 
-        ItemStack photographyCameraStack = new ItemStack(Items.SPYGLASS);
-        photographyCameraStack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, comp -> comp.update(currentNbt -> {
-            currentNbt.putBoolean("isPhotographyCamera",true);
-        }));
+//        ItemStack photographyCameraStack = new ItemStack(Items.SPYGLASS);
+//        photographyCameraStack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, comp -> comp.update(currentNbt -> {
+//            currentNbt.putBoolean("isPhotographyCamera",true);
+//        }));
+
+        ItemStackTemplate photographyCameraStack = new ItemStackTemplate(Items.SPYGLASS, DataComponentPatch.builder().build());
+
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             if (((PlayerIsUsingCamera) player).isUsingPhotographyCamera()) {
                 player.getItemInHand(InteractionHand.valueOf(PhotographyHud.handUsingPhotographyCamera)).use(world, player, InteractionHand.valueOf(PhotographyHud.handUsingPhotographyCamera));
                 return InteractionResult.FAIL;
-            } else if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == photographyCameraStack.getItem()) {
-                if (Objects.equals(player.getItemInHand(InteractionHand.MAIN_HAND).getComponents().get(DataComponents.CUSTOM_DATA), photographyCameraStack.getComponents().get(DataComponents.CUSTOM_DATA))) {
+            } else if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == photographyCameraStack.item()) {
+                if (Objects.equals(player.getItemInHand(InteractionHand.MAIN_HAND).getComponents().get(DataComponents.CUSTOM_DATA), photographyCameraStack.get(DataComponents.CUSTOM_DATA))) {
                     player.getItemInHand(InteractionHand.MAIN_HAND).use(world, player, InteractionHand.MAIN_HAND);
                     return InteractionResult.FAIL;
                 }
@@ -68,8 +75,8 @@ public class PhotographyClient implements ClientModInitializer {
             if (((PlayerIsUsingCamera) player).isUsingPhotographyCamera()) {
                 player.getItemInHand(InteractionHand.valueOf(PhotographyHud.handUsingPhotographyCamera)).use(world, player, InteractionHand.valueOf(PhotographyHud.handUsingPhotographyCamera));
                 return InteractionResult.FAIL;
-            } else if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == photographyCameraStack.getItem()) {
-                if (Objects.equals(player.getItemInHand(InteractionHand.MAIN_HAND).getComponents().get(DataComponents.CUSTOM_DATA), photographyCameraStack.getComponents().get(DataComponents.CUSTOM_DATA))) {
+            } else if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == photographyCameraStack.item()) {
+                if (Objects.equals(player.getItemInHand(InteractionHand.MAIN_HAND).getComponents().get(DataComponents.CUSTOM_DATA), photographyCameraStack.get(DataComponents.CUSTOM_DATA))) {
                     player.getItemInHand(InteractionHand.MAIN_HAND).use(world, player, InteractionHand.MAIN_HAND);
                     return InteractionResult.FAIL;
                 }
@@ -81,8 +88,8 @@ public class PhotographyClient implements ClientModInitializer {
             if (((PlayerIsUsingCamera) player).isUsingPhotographyCamera()) {
                 player.getItemInHand(InteractionHand.valueOf(PhotographyHud.handUsingPhotographyCamera)).use(world, player, InteractionHand.valueOf(PhotographyHud.handUsingPhotographyCamera));
                 return InteractionResult.FAIL;
-            } else if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == photographyCameraStack.getItem()) {
-                if (Objects.equals(player.getItemInHand(InteractionHand.MAIN_HAND).getComponents().get(DataComponents.CUSTOM_DATA), photographyCameraStack.getComponents().get(DataComponents.CUSTOM_DATA))) {
+            } else if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == photographyCameraStack.item()) {
+                if (Objects.equals(player.getItemInHand(InteractionHand.MAIN_HAND).getComponents().get(DataComponents.CUSTOM_DATA), photographyCameraStack.get(DataComponents.CUSTOM_DATA))) {
                     player.getItemInHand(InteractionHand.MAIN_HAND).use(world, player, InteractionHand.MAIN_HAND);
                     return InteractionResult.FAIL;
                 }
@@ -91,8 +98,10 @@ public class PhotographyClient implements ClientModInitializer {
         });
     }
 
-    private void onHudRender(GuiGraphics context, DeltaTracker renderTickCounter) {
+    private void onHudRender(GuiGraphicsExtractor context, DeltaTracker renderTickCounter) {
         if (PhotographyHud.isUsingPhotographyCamera) {
+            // TODO
+            System.out.println("Happening!");
             PhotographyHud.renderPhotographyCameraOverlay(context);
         }
     }
