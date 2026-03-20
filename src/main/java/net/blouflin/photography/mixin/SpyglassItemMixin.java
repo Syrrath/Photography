@@ -57,7 +57,7 @@ public abstract class SpyglassItemMixin {
                         PhotographyHud.handUsingPhotographyCamera = hand.toString();
                         PhotographyHud.defaultMouseSensitivity = client.options.sensitivity().get();
                         PhotographyHud.isHUDhidden = client.options.hideGui;
-                        //client.options.hideGui = true;
+                        client.options.hideGui = true;
                         PhotographyHud.isUsingPhotographyCamera = true;
                         user.playSound(SoundEvents.SPYGLASS_USE, 1.0f, 1.0f);
                         SetUsingPhotographyCameraPayload payload = new SetUsingPhotographyCameraPayload(PhotographyHud.isUsingPhotographyCamera, PhotographyHud.handUsingPhotographyCamera);

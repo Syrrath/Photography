@@ -9,19 +9,14 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-//import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.Registry;
-import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -29,10 +24,8 @@ import net.minecraft.util.*;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -47,21 +40,14 @@ public class PhotographyClient implements ClientModInitializer {
 
         Registry.register(BuiltInRegistries.SOUND_EVENT, CAMERA_SHUTTER_SOUND, CAMERA_SHUTTER);
 
-        //ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(Identifier.of("photography","item/camera")));
-
         ClientPlayNetworking.registerGlobalReceiver(CreatePicturePayload.ID, (payload, handler) -> CreatePicturePayload.receive(handler.client(), payload.id(), payload.nbtCompound()));
         ClientPlayNetworking.registerGlobalReceiver(GetUsingPhotographyCameraPayload.ID, (payload, handler) -> GetUsingPhotographyCameraPayload.receive(handler.client(), payload.player(), payload.isUsingPhotographyCamera(), payload.handUsingPhotographyCamera()));
         ClientPlayNetworking.registerGlobalReceiver(PlayCameraShutterSoundPayload.ID, (payload, handler) -> PlayCameraShutterSoundPayload.receive(handler.client(), payload.globalPos()));
 
-        //HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("photography", "photography_hud"), this::onHudRender);
         //HudRenderCallback.EVENT.register(this::onHudRender);
-        //HudElementRegistryImpl.addLast(Identifier.fromNamespaceAndPath("photography", "photography_hud"), this::onHudRender);
-        //HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, Identifier.fromNamespaceAndPath("photography", "before_chat"), this::onHudRender);
-        HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("photography", "before_chat"), this::onHudRender);
+        HudElementRegistry.attachElementAfter(VanillaHudElements.SLEEP, Identifier.fromNamespaceAndPath("photography", "after_sleep"), this::onHudRender);
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-
-
             ItemStack photographyCameraStack = null;
             try {
                 photographyCameraStack = new ItemStack(Items.SPYGLASS);
@@ -71,9 +57,6 @@ public class PhotographyClient implements ClientModInitializer {
             } catch (NullPointerException exception) {
                 // ItemStacks no longer exist until a world is loaded
             }
-
-            System.out.println(photographyCameraStack);
-
             if (((PlayerIsUsingCamera) player).isUsingPhotographyCamera()) {
                 player.getItemInHand(InteractionHand.valueOf(PhotographyHud.handUsingPhotographyCamera)).use(world, player, InteractionHand.valueOf(PhotographyHud.handUsingPhotographyCamera));
                 return InteractionResult.FAIL;
@@ -140,8 +123,6 @@ public class PhotographyClient implements ClientModInitializer {
 
     private void onHudRender(GuiGraphicsExtractor context, DeltaTracker renderTickCounter) {
         if (PhotographyHud.isUsingPhotographyCamera) {
-            // TODO
-            System.out.println("Running onHudRender after checking if camera is being used!");
             PhotographyHud.renderPhotographyCameraOverlay(context);
         }
     }
