@@ -46,7 +46,7 @@ public class PhotographyHud {
         spyglassScale = Mth.lerp(0.5f * f, spyglassScale, 1.125f);
 
         if (client.options.getCameraType().isFirstPerson() && client.screen == null) {
-            client.options.hideGui = true;
+            client.options.hideGui = false;
             checkIsPhotographyCameraOpen(client);
             if (!isHUDhidden) {
                 renderSpyglassOverlay(context, spyglassScale);

@@ -10,10 +10,14 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 //import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.Registry;
@@ -49,8 +53,11 @@ public class PhotographyClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(GetUsingPhotographyCameraPayload.ID, (payload, handler) -> GetUsingPhotographyCameraPayload.receive(handler.client(), payload.player(), payload.isUsingPhotographyCamera(), payload.handUsingPhotographyCamera()));
         ClientPlayNetworking.registerGlobalReceiver(PlayCameraShutterSoundPayload.ID, (payload, handler) -> PlayCameraShutterSoundPayload.receive(handler.client(), payload.globalPos()));
 
-        HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("photography", "photography_hud"), this::onHudRender);
+        //HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("photography", "photography_hud"), this::onHudRender);
         //HudRenderCallback.EVENT.register(this::onHudRender);
+        //HudElementRegistryImpl.addLast(Identifier.fromNamespaceAndPath("photography", "photography_hud"), this::onHudRender);
+        //HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, Identifier.fromNamespaceAndPath("photography", "before_chat"), this::onHudRender);
+        HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("photography", "before_chat"), this::onHudRender);
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
 
@@ -134,7 +141,7 @@ public class PhotographyClient implements ClientModInitializer {
     private void onHudRender(GuiGraphicsExtractor context, DeltaTracker renderTickCounter) {
         if (PhotographyHud.isUsingPhotographyCamera) {
             // TODO
-            System.out.println("Happening!");
+            System.out.println("Running onHudRender after checking if camera is being used!");
             PhotographyHud.renderPhotographyCameraOverlay(context);
         }
     }
