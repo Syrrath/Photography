@@ -1,5 +1,1 @@
-accessWidener v2 named
-
-accessible field net/minecraft/item/map/MapState showDecorations Z
-
-accessible field net/minecraft/item/map/MapState unlimitedTracking Z
+classTweaker v1 named
