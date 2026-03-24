@@ -55,7 +55,7 @@ public record CreatePicturePayload(Integer id, CompoundTag nbtCompound) implemen
 
                     try {
                         bufferedImage = CreatePicturePayload.crop(bufferedImage, bufferedImage.getHeight(), bufferedImage.getHeight());
-                        Screenshot.grab(client.gameDirectory, client.getMainRenderTarget(), (text) -> {});
+                        //Screenshot.grab(client.gameDirectory, client.getMainRenderTarget(), (text) -> {});
 
                         // TODO Debug
                         //System.out.println("bufferedImage: "+bufferedImage);
